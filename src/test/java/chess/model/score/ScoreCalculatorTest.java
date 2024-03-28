@@ -1,5 +1,6 @@
 package chess.model.score;
 
+import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,5 +47,22 @@ class ScoreCalculatorTest {
             }
         }
         return new ScoreCalculator(pieces);
+    }
+
+    @DisplayName("Black 기물의 총 점수를 구한다")
+    @Test
+    void calculateBlackTotalScore() {
+        List<String> snapShot = List.of(
+            ".KR.....",
+            "P.PB....",
+            ".P..Q...",
+            "........",
+            ".....nq.",
+            ".....p.p",
+            ".....pp.",
+            "....rk.."
+        );
+        ScoreCalculator scoreCalculator = generate(snapShot);
+        assertThat(scoreCalculator.calculate(BLACK)).isEqualTo(20);
     }
 }
