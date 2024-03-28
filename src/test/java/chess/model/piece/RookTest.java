@@ -10,6 +10,7 @@ import static chess.model.Fixtures.F6;
 import static chess.model.Fixtures.G2;
 import static chess.model.Fixtures.H4;
 import static chess.model.material.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class RookTest {
@@ -77,5 +79,13 @@ class RookTest {
             Arguments.of(E4, F6),
             Arguments.of(E4, G2)
         );
+    }
+
+    @DisplayName("Rook의 총 점수를 계산한다")
+    @ParameterizedTest
+    @CsvSource({"1,5", "2,10"})
+    void totalPoint(int count, double expectedPoint) {
+        Rook rook = Rook.of(WHITE);
+        assertThat(rook.totalPoint(count)).isEqualTo(expectedPoint);
     }
 }

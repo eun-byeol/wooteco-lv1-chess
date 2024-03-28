@@ -83,7 +83,7 @@
 - [x] pawn : 1점 or 같은 세로줄에 같은 색의 폰이 있는 경우 0.5점
 - [x] knight : 2.5점
 - [x] bishop : 3점
-- [ ] rook : 5점
+- [x] rook : 5점
 - [x] queen : 9점
 - [x] king : 0점
 - [x] none : 0점

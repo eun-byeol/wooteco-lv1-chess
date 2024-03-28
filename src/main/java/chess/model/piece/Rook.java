@@ -20,6 +20,7 @@ public class Rook extends Piece {
         .stream()
         .collect(toMap(identity(), Rook::new));
     private static final List<Movement> MOVEMENTS = List.of(UP, DOWN, LEFT, RIGHT);
+    private static final double POINT = 5;
 
     private Rook(Color color) {
         super(color);
@@ -41,5 +42,10 @@ public class Rook extends Piece {
             return;
         }
         throw new IllegalArgumentException("Rook은 상하좌우 이동만 가능합니다.");
+    }
+
+    @Override
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

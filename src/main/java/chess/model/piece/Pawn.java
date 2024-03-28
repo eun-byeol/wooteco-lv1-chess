@@ -85,6 +85,7 @@ public class Pawn extends Piece {
         throw new IllegalArgumentException("Pawn은 공격 시 전방 대각선 1칸 이동만 가능합니다.");
     }
 
+    @Override
     public double totalPoint(int count) {
         if (count > 1) {
             return count * HALF_POINT;

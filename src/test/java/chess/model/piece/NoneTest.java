@@ -2,7 +2,6 @@ package chess.model.piece;
 
 import static chess.model.Fixtures.A3;
 import static chess.model.Fixtures.A4;
-import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

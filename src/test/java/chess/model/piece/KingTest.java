@@ -24,7 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class KingTest {
@@ -94,6 +93,6 @@ class KingTest {
     @Test
     void totalPoint() {
         King king = King.of(WHITE);
-        assertThat(king.totalPoint(1)).isEqualTo(0);
+        assertThat(king.totalPoint(1)).isZero();
     }
 }

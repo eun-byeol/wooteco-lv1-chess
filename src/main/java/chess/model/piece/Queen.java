@@ -51,6 +51,7 @@ public class Queen extends Piece {
         throw new IllegalArgumentException("Queen은 상하좌우 대각선 이동만 가능합니다.");
     }
 
+    @Override
     public double totalPoint(int count) {
         return count * POINT;
     }

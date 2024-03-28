@@ -16,6 +16,8 @@ public abstract class Piece {
 
     public abstract Route findRoute(Position source, Position target);
 
+    public abstract double totalPoint(int count);
+
     public boolean canAttack(Position source, Position target) {
         return false;
     }

@@ -51,6 +51,7 @@ public class Knight extends Piece {
         throw new IllegalArgumentException("Knight는 L자 이동만 가능합니다.");
     }
 
+    @Override
     public double totalPoint(int count) {
         return count * POINT;
     }
