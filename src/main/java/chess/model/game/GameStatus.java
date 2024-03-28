@@ -17,7 +17,7 @@ public class GameStatus {
         this(Status.READY, onStart, onMove);
     }
 
-    private GameStatus(Status status, Consumer<Board> onStart,
+    public GameStatus(Status status, Consumer<Board> onStart,
         BiConsumer<List<String>, Board> onMove) {
         this.status = status;
         this.onStart = onStart;
