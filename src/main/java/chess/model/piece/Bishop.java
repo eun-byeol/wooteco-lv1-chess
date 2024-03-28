@@ -44,9 +44,4 @@ public class Bishop extends Piece {
         }
         throw new IllegalArgumentException("Bishop은 대각선 이동만 가능합니다.");
     }
-
-    @Override
-    public boolean isBishop() {
-        return true;
-    }
 }

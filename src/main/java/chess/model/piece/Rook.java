@@ -42,9 +42,4 @@ public class Rook extends Piece {
         }
         throw new IllegalArgumentException("Rook은 상하좌우 이동만 가능합니다.");
     }
-
-    @Override
-    public boolean isRook() {
-        return true;
-    }
 }

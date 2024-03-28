@@ -4,7 +4,6 @@ import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
 
 import chess.model.material.Color;
-import chess.model.material.Type;
 import chess.model.piece.Bishop;
 import chess.model.piece.King;
 import chess.model.piece.Knight;
@@ -46,9 +45,9 @@ public enum PieceMapper {
     }
 
     private static PieceMapper findPieceMapper(Piece piece) {
-        Type type = Type.findType(piece);
+        Color color = Color.findColor(piece);
         return Arrays.stream(values())
-            .filter(pieceMapper -> pieceMapper.name().equals(type.name()))
+            .filter(pieceMapper -> pieceMapper.generate.apply(color) == piece)
             .findFirst()
             .orElse(NONE);
     }

@@ -43,28 +43,4 @@ public abstract class Piece {
     public boolean isNone() {
         return false;
     }
-
-    public boolean isPawn() {
-        return false;
-    }
-
-    public boolean isRook() {
-        return false;
-    }
-
-    public boolean isKnight() {
-        return false;
-    }
-
-    public boolean isBishop() {
-        return false;
-    }
-
-    public boolean isQueen() {
-        return false;
-    }
-
-    public boolean isKing() {
-        return false;
-    }
 }
