@@ -31,6 +31,8 @@ public class Pawn extends Piece {
     private static final List<Movement> BLACK_ATTACK_MOVEMENTS = List.of(DOWN_LEFT, DOWN_RIGHT);
     private static final Row WHITE_INITIAL_ROW = Row.TWO;
     private static final Row BLACK_INITIAL_ROW = Row.SEVEN;
+    private static final double POINT = 1;
+    private static final double HALF_POINT = 0.5;
 
     private Pawn(Color color) {
         super(color);
@@ -81,5 +83,12 @@ public class Pawn extends Piece {
             return true;
         }
         throw new IllegalArgumentException("Pawn은 공격 시 전방 대각선 1칸 이동만 가능합니다.");
+    }
+
+    public double totalPoint(int count) {
+        if (count > 1) {
+            return count * HALF_POINT;
+        }
+        return count * POINT;
     }
 }
