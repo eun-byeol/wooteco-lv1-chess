@@ -27,6 +27,7 @@ public class Queen extends Piece {
         UP, DOWN, LEFT, RIGHT,
         UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT
     );
+    private static final double POINT = 9;
 
     private Queen(Color color) {
         super(color);
@@ -48,5 +49,9 @@ public class Queen extends Piece {
             return;
         }
         throw new IllegalArgumentException("Queen은 상하좌우 대각선 이동만 가능합니다.");
+    }
+
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

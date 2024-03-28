@@ -84,7 +84,7 @@
 - [x] knight : 2.5점
 - [x] bishop : 3점
 - [ ] rook : 5점
-- [ ] queen : 9점
+- [x] queen : 9점
 - [x] king : 0점
 - [x] none : 0점
 
