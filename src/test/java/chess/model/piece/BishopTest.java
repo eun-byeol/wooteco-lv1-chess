@@ -10,6 +10,7 @@ import static chess.model.Fixtures.F6;
 import static chess.model.Fixtures.G1;
 import static chess.model.Fixtures.G3;
 import static chess.model.material.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,6 +19,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class BishopTest {
@@ -77,5 +79,13 @@ class BishopTest {
             Arguments.of(D4, E6),
             Arguments.of(D4, G3)
         );
+    }
+
+    @DisplayName("Bishop의 총 점수를 계산한다")
+    @ParameterizedTest
+    @CsvSource({"1,3", "2,6"})
+    void totalPoint(int count, double expectedPoint) {
+        Bishop bishop = Bishop.of(WHITE);
+        assertThat(bishop.totalPoint(count)).isEqualTo(expectedPoint);
     }
 }
