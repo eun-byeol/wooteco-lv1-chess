@@ -18,7 +18,8 @@ class GameStatusTest {
     void readyToStart() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("start"), board);
@@ -31,7 +32,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         assertThatThrownBy(() -> gameStatus.action(List.of("start"), board))
@@ -45,7 +47,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("move", "a2", "a4"), board);
@@ -58,7 +61,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             MOVE,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("move", "a7", "a5"), board);
@@ -70,7 +74,8 @@ class GameStatusTest {
     void readyToMove() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         assertThatThrownBy(() -> gameStatus.action(List.of("move", "a2", "a4"), board))
@@ -83,7 +88,8 @@ class GameStatusTest {
     void readyToFinish() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
@@ -96,7 +102,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
@@ -109,7 +116,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             MOVE,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> true
+            (commands, board) -> true,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
@@ -122,7 +130,8 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             MOVE,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> false
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus")
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);

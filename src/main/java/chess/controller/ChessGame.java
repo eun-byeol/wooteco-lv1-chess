@@ -1,6 +1,7 @@
 package chess.controller;
 
 import chess.dto.BoardDto;
+import chess.dto.ColorScoreDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.InitialBoardFactory;
@@ -26,7 +27,8 @@ public final class ChessGame {
 
     public void run() {
         inputView.printGameIntro();
-        GameStatus gameStatus = new GameStatus(this::executeStart, this::executeMove);
+        GameStatus gameStatus = new GameStatus(this::executeStart, this::executeMove,
+            this::executeStatus);
         BoardFactory boardFactory = new InitialBoardFactory();
         Board board = boardFactory.generate();
         while (gameStatus.isRunning()) {
@@ -55,6 +57,11 @@ public final class ChessGame {
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
         return success;
+    }
+
+    private void executeStatus(Board board) {
+        List<ColorScoreDto> scores = board.calculateScore();
+        outputView.printScoreStatus(scores);
     }
 
     private <T> T retryOnException(Supplier<T> operation) {

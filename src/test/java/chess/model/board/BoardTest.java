@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.dto.BoardDto;
+import chess.dto.ColorScoreDto;
 import chess.model.CustomBoardFactory;
 import chess.model.piece.Piece;
 import java.util.List;
@@ -188,9 +189,9 @@ class BoardTest {
         assertThat(board.move(D4, C5)).isTrue();
     }
 
-    @DisplayName("White 기물의 총 점수를 구한다")
+    @DisplayName("색상 별 총 점수를 구한다")
     @Test
-    void calculateWhiteTotalScore() {
+    void calculateTotalScoreByColor() {
         List<String> snapShot = List.of(
             ".KR.....",
             "P.PB....",
@@ -204,6 +205,12 @@ class BoardTest {
         BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
         Board board = boardFactory.generate();
 
-        assertThat(board.calculateScore(WHITE)).isEqualTo(19.5);
+        List<ColorScoreDto> actual = board.calculateScore();
+        List<ColorScoreDto> expected = List.of(
+            new ColorScoreDto("백팀", 19.5),
+            new ColorScoreDto("흑팀", 20)
+        );
+
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 }

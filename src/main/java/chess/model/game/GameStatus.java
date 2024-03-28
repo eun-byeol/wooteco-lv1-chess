@@ -12,16 +12,23 @@ public class GameStatus {
     private final Status status;
     private final Consumer<Board> onStart;
     private final BiPredicate<List<String>, Board> onMove;
+    private final Consumer<Board> onStatus;
 
-    public GameStatus(Consumer<Board> onStart, BiPredicate<List<String>, Board> onMove) {
-        this(Status.READY, onStart, onMove);
+    public GameStatus(Consumer<Board> onStart, BiPredicate<List<String>, Board> onMove,
+        Consumer<Board> onStatus) {
+        this(Status.READY, onStart, onMove, onStatus);
     }
 
-    public GameStatus(Status status, Consumer<Board> onStart,
-        BiPredicate<List<String>, Board> onMove) {
+    public GameStatus(
+        Status status,
+        Consumer<Board> onStart,
+        BiPredicate<List<String>, Board> onMove,
+        Consumer<Board> onStatus
+    ) {
         this.status = status;
         this.onStart = onStart;
         this.onMove = onMove;
+        this.onStatus = onStatus;
     }
 
     public GameStatus action(List<String> commands, Board board) {
@@ -37,6 +44,9 @@ public class GameStatus {
         if (command.isMove()) {
             return updateStatus(commands, board);
         }
+        if (command.isStatus()) {
+            onStatus.accept(board);
+        }
         return this;
     }
 
@@ -50,12 +60,12 @@ public class GameStatus {
     }
 
     private GameStatus changeEnd() {
-        return new GameStatus(Status.END, onStart, onMove);
+        return new GameStatus(Status.END, onStart, onMove, onStatus);
     }
 
     private GameStatus changeStart() {
         if (status.isReady()) {
-            return new GameStatus(Status.START, onStart, onMove);
+            return new GameStatus(Status.START, onStart, onMove, onStatus);
         }
         throw new UnsupportedOperationException("게임이 이미 진행 중 입니다.");
     }
@@ -65,7 +75,7 @@ public class GameStatus {
             return this;
         }
         if (status.isStart()) {
-            return new GameStatus(Status.MOVE, onStart, onMove);
+            return new GameStatus(Status.MOVE, onStart, onMove, onStatus);
         }
         throw new UnsupportedOperationException("게임을 start 해 주세요.");
     }

@@ -1,11 +1,13 @@
 package chess.model.board;
 
+import chess.dto.ColorScoreDto;
 import chess.model.material.Color;
 import chess.model.piece.None;
 import chess.model.piece.Piece;
 import chess.model.position.Position;
 import chess.model.position.Route;
 import chess.model.score.ScoreCalculator;
+import java.util.List;
 import java.util.Map;
 
 public class Board {
@@ -57,9 +59,12 @@ public class Board {
         }
     }
 
-    public double calculateScore(Color color) {
+    public List<ColorScoreDto> calculateScore() {
         ScoreCalculator scoreCalculator = new ScoreCalculator(pieces);
-        return scoreCalculator.calculate(color);
+        return Color.allColors()
+            .stream()
+            .map(color -> ColorScoreDto.of(color, scoreCalculator.calculate(color)))
+            .toList();
     }
 
     public Piece findPiece(Position position) {
