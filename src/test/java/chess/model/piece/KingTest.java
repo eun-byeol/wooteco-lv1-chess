@@ -14,14 +14,17 @@ import static chess.model.Fixtures.F3;
 import static chess.model.Fixtures.F4;
 import static chess.model.Fixtures.G5;
 import static chess.model.material.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import chess.model.position.Position;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class KingTest {
@@ -85,5 +88,12 @@ class KingTest {
             Arguments.of(E3, E1),
             Arguments.of(E3, G5)
         );
+    }
+
+    @DisplayName("King의 총 점수를 계산한다")
+    @Test
+    void totalPoint() {
+        King king = King.of(WHITE);
+        assertThat(king.totalPoint(1)).isEqualTo(0);
     }
 }

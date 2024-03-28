@@ -85,7 +85,7 @@
 - [x] bishop : 3점
 - [ ] rook : 5점
 - [ ] queen : 9점
-- [ ] king : 0점
+- [x] king : 0점
 
 ## 게임 명령어
 
