@@ -21,6 +21,10 @@ public class None extends Piece {
         throw new IllegalArgumentException("이동할 기물이 존재하지 않습니다.");
     }
 
+    public double totalPoint(int count) {
+        return 0;
+    }
+
     @Override
     public boolean isExist() {
         return !isNone();
