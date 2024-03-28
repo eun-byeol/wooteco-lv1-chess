@@ -187,4 +187,23 @@ class BoardTest {
 
         assertThat(board.move(D4, C5)).isTrue();
     }
+
+    @DisplayName("White 기물의 총 점수를 구한다")
+    @Test
+    void calculateWhiteTotalScore() {
+        List<String> snapShot = List.of(
+            ".KR.....",
+            "P.PB....",
+            ".P..Q...",
+            "........",
+            ".....nq.",
+            ".....p.p",
+            ".....pp.",
+            "....rk.."
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        Board board = boardFactory.generate();
+
+        assertThat(board.calculateScore(WHITE)).isEqualTo(19.5);
+    }
 }

@@ -5,6 +5,7 @@ import chess.model.piece.None;
 import chess.model.piece.Piece;
 import chess.model.position.Position;
 import chess.model.position.Route;
+import chess.model.score.ScoreCalculator;
 import java.util.Map;
 
 public class Board {
@@ -54,6 +55,11 @@ public class Board {
         if (route.isBlocked(pieces)) {
             throw new IllegalArgumentException("경로 상에 다른 기물이 존재합니다.");
         }
+    }
+
+    public double calculateScore(Color color) {
+        ScoreCalculator scoreCalculator = new ScoreCalculator(pieces);
+        return scoreCalculator.calculate(color);
     }
 
     public Piece findPiece(Position position) {
