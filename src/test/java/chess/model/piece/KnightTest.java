@@ -15,6 +15,8 @@ import static chess.model.Fixtures.F3;
 import static chess.model.Fixtures.F5;
 import static chess.model.Fixtures.G6;
 import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,6 +25,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class KnightTest {
@@ -88,5 +91,13 @@ class KnightTest {
             Arguments.of(D4, F2),
             Arguments.of(D4, G6)
         );
+    }
+
+    @DisplayName("Knight의 총 점수를 계산한다")
+    @ParameterizedTest
+    @CsvSource({"1,2.5", "2,5"})
+    void totalPoint(int count, double expectedPoint) {
+        Knight knight = Knight.of(WHITE);
+        assertThat(knight.totalPoint(count)).isEqualTo(expectedPoint);
     }
 }
