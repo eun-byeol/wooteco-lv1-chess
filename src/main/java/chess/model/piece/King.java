@@ -49,4 +49,9 @@ public class King extends Piece {
         }
         throw new IllegalArgumentException("King은 상하좌우 대각선 1칸 이동만 가능합니다.");
     }
+
+    @Override
+    public boolean isNotKing() {
+        return false;
+    }
 }

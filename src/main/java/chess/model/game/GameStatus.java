@@ -2,7 +2,7 @@ package chess.model.game;
 
 import chess.model.board.Board;
 import java.util.List;
-import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 public class GameStatus {
@@ -11,14 +11,14 @@ public class GameStatus {
 
     private final Status status;
     private final Consumer<Board> onStart;
-    private final BiConsumer<List<String>, Board> onMove;
+    private final BiPredicate<List<String>, Board> onMove;
 
-    public GameStatus(Consumer<Board> onStart, BiConsumer<List<String>, Board> onMove) {
+    public GameStatus(Consumer<Board> onStart, BiPredicate<List<String>, Board> onMove) {
         this(Status.READY, onStart, onMove);
     }
 
     public GameStatus(Status status, Consumer<Board> onStart,
-        BiConsumer<List<String>, Board> onMove) {
+        BiPredicate<List<String>, Board> onMove) {
         this.status = status;
         this.onStart = onStart;
         this.onMove = onMove;
@@ -35,11 +35,18 @@ public class GameStatus {
             return gameStatus;
         }
         if (command.isMove()) {
-            GameStatus gameStatus = changeMove();
-            onMove.accept(commands, board);
-            return gameStatus;
+            return updateStatus(commands, board);
         }
         return this;
+    }
+
+    private GameStatus updateStatus(List<String> commands, Board board) {
+        GameStatus gameStatus = changeMove();
+        boolean success = onMove.test(commands, board);
+        if (success) {
+            return gameStatus;
+        }
+        return changeEnd();
     }
 
     private GameStatus changeEnd() {

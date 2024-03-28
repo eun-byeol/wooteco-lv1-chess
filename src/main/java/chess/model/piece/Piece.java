@@ -43,4 +43,8 @@ public abstract class Piece {
     public boolean isNone() {
         return false;
     }
+
+    public boolean isNotKing() {
+        return true;
+    }
 }

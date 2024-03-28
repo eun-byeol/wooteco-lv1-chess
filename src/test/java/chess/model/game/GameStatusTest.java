@@ -18,7 +18,7 @@ class GameStatusTest {
     void readyToStart() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("start"), board);
@@ -31,7 +31,7 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         assertThatThrownBy(() -> gameStatus.action(List.of("start"), board))
@@ -45,7 +45,7 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("move", "a2", "a4"), board);
@@ -58,7 +58,7 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             MOVE,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("move", "a7", "a5"), board);
@@ -70,7 +70,7 @@ class GameStatusTest {
     void readyToMove() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         assertThatThrownBy(() -> gameStatus.action(List.of("move", "a2", "a4"), board))
@@ -83,7 +83,7 @@ class GameStatusTest {
     void readyToFinish() {
         GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
@@ -96,7 +96,7 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             START,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
@@ -109,7 +109,20 @@ class GameStatusTest {
         GameStatus gameStatus = new GameStatus(
             MOVE,
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> true
+        );
+        Board board = new InitialBoardFactory().generate();
+        GameStatus currentStatus = gameStatus.action(List.of("end"), board);
+        assertThat(currentStatus.isRunning()).isFalse();
+    }
+
+    @DisplayName("move에서 결과값이 false이면 end 상태로 바뀐다")
+    @Test
+    void moveToEndStatus() {
+        GameStatus gameStatus = new GameStatus(
+            MOVE,
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false
         );
         Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);

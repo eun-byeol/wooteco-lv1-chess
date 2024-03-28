@@ -48,12 +48,13 @@ public final class ChessGame {
         outputView.printChessBoard(boardDto);
     }
 
-    private void executeMove(List<String> commands, Board board) {
+    private boolean executeMove(List<String> commands, Board board) {
         Position source = Position.from(commands.get(SOURCE_INDEX));
         Position target = Position.from(commands.get(TARGET_INDEX));
-        board.move(source, target);
+        boolean success = board.move(source, target);
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
+        return success;
     }
 
     private <T> T retryOnException(Supplier<T> operation) {

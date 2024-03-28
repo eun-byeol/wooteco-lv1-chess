@@ -17,16 +17,18 @@ public class Board {
         this.turn = turn;
     }
 
-    public void move(Position source, Position target) {
+    public boolean move(Position source, Position target) {
         validatePosition(source, target);
         validateMovement(source, target);
-        applyMove(source, target);
+        return applyMove(source, target);
     }
 
-    private void applyMove(Position source, Position target) {
+    private boolean applyMove(Position source, Position target) {
+        Piece targetPiece = pieces.get(target);
         pieces.put(target, findPiece(source));
         pieces.put(source, None.of());
         turn = turn.rotate();
+        return targetPiece.isNotKing();
     }
 
     private void validatePosition(Position source, Position target) {

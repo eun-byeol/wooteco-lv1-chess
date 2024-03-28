@@ -11,8 +11,10 @@ import static chess.model.Fixtures.C2;
 import static chess.model.Fixtures.C3;
 import static chess.model.Fixtures.C4;
 import static chess.model.Fixtures.C5;
+import static chess.model.Fixtures.D4;
 import static chess.model.Fixtures.E3;
 import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -146,5 +148,43 @@ class BoardTest {
             () -> assertThat(targetPiece).isEqualTo(sourcePiece),
             () -> assertThat(emptyPiece.isNone()).isTrue()
         );
+    }
+
+    @DisplayName("이동 시 King이 잡히면 false를 반환한다")
+    @Test
+    void catchKing() {
+        List<String> snapShot = List.of(
+            "........",
+            "........",
+            "........",
+            "..K.....",
+            "...q....",
+            "........",
+            "........",
+            ".......k"
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        Board board = boardFactory.generate();
+
+        assertThat(board.move(D4, C5)).isFalse();
+    }
+
+    @DisplayName("이동 시 King이 잡히면 false를 반환한다")
+    @Test
+    void catchChessman() {
+        List<String> snapShot = List.of(
+            "..K.....",
+            "........",
+            "........",
+            "..P.....",
+            "...q....",
+            "........",
+            "........",
+            ".......k"
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        Board board = boardFactory.generate();
+
+        assertThat(board.move(D4, C5)).isTrue();
     }
 }
