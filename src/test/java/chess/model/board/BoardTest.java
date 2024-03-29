@@ -23,12 +23,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.dto.BoardDto;
-import chess.dto.ColorScoreDto;
 import chess.model.CustomBoardFactory;
 import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.Piece;
 import java.util.List;
-import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,13 +1,11 @@
 package chess.model.board;
 
-import chess.dto.ColorScoreDto;
 import chess.model.material.Color;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.None;
 import chess.model.piece.Piece;
 import chess.model.position.Position;
 import chess.model.position.Route;
-import chess.model.outcome.ScoreCalculator;
-import java.util.List;
 import java.util.Map;
 
 public class Board {

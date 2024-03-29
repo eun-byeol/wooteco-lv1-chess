@@ -1,6 +1,7 @@
 package chess.model.game;
 
 public enum Status {
+
     READY,
     START,
     MOVE,

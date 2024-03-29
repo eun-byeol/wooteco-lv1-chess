@@ -2,8 +2,8 @@ package chess.view;
 
 import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
-import chess.dto.WinnerDto;
 import chess.dto.RankDto;
+import chess.dto.WinnerDto;
 import java.util.Arrays;
 
 public final class OutputView {
@@ -35,7 +35,7 @@ public final class OutputView {
     public void printScoreStatus(ColorScoreDto... colorScoreDto) {
         System.out.println(SCORE_STATUS_INTRO);
         Arrays.stream(colorScoreDto)
-                .forEach(this::printScore);
+            .forEach(this::printScore);
         System.out.println();
     }
 
