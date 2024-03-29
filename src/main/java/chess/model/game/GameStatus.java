@@ -53,7 +53,7 @@ public class GameStatus {
             return changeStatus(commands, board);
         }
         if (command.isStatus()) {
-            onStatus.accept(board);
+            executeStatus(board);
         }
         return this;
     }
@@ -88,6 +88,13 @@ public class GameStatus {
         throw new UnsupportedOperationException("게임을 start 해 주세요.");
     }
 
+    private void executeStatus(Board board) {
+        if (isReady()) {
+            throw new UnsupportedOperationException("게임을 start 해 주세요.");
+        }
+        onStatus.accept(board);
+    }
+
     public boolean isRunning() {
         return status.isRunning();
     }
@@ -98,5 +105,9 @@ public class GameStatus {
 
     public boolean isMoved() {
         return status.isMove();
+    }
+
+    private boolean isReady() {
+        return status.isReady();
     }
 }

@@ -27,6 +27,21 @@ class GameStatusTest {
         assertThat(currentStatus.isStarted()).isTrue();
     }
 
+    @DisplayName("ready에서 status 하면 예외가 발생한다")
+    @Test
+    void readyToStatus() {
+        GameStatus gameStatus = new GameStatus(
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
+        assertThatThrownBy(() -> gameStatus.action(List.of("status"), board))
+            .isInstanceOf(UnsupportedOperationException.class)
+            .hasMessage("게임을 start 해 주세요.");
+    }
+
     @DisplayName("start에서 start를 하면 예외가 발생한다")
     @Test
     void startToStart() {
