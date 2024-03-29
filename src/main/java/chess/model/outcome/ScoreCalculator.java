@@ -1,5 +1,6 @@
-package chess.model.score;
+package chess.model.outcome;
 
+import chess.dto.ColorScoreDto;
 import chess.model.material.Color;
 import chess.model.piece.Piece;
 import chess.model.position.Column;
@@ -15,7 +16,7 @@ public final class ScoreCalculator {
         this.pieces = pieces;
     }
 
-    public double calculate(Color color) {
+    public ColorScoreDto calculate(Color color) {
         double total = 0;
         for (Column column : Column.values()) {
             Map<Piece, Integer> counts = new HashMap<>();
@@ -27,7 +28,7 @@ public final class ScoreCalculator {
             }
             total += scores(counts);
         }
-        return total;
+        return ColorScoreDto.of(color, total);
     }
 
     private double scores(Map<Piece, Integer> counts) {

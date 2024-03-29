@@ -2,8 +2,9 @@ package chess.view;
 
 import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
+import chess.dto.WinnerDto;
 import chess.dto.RankDto;
-import java.util.List;
+import java.util.Arrays;
 
 public final class OutputView {
 
@@ -11,6 +12,9 @@ public final class OutputView {
     private static final CharSequence RANK_DELIMITER = "";
     private static final String SCORE_STATUS_INTRO = NEWLINE + "## 점수 집계";
     private static final String SCORE_FORMAT = "%s : %.1f점" + NEWLINE;
+    private static final String RESULT_STATUS_INTRO = "## 게임 결과";
+    private static final String WINNER_FORMAT = "%s 승리" + NEWLINE;
+    private static final String DRAW_FORMAT = "무승부";
     private static final String ERROR_PREFIX = "[ERROR] ";
 
     public void printException(Exception e) {
@@ -20,6 +24,7 @@ public final class OutputView {
     public void printChessBoard(BoardDto boardDto) {
         boardDto.getRanks()
             .forEach(this::printRank);
+        System.out.println();
     }
 
     private void printRank(RankDto rankDto) {
@@ -27,12 +32,23 @@ public final class OutputView {
         System.out.println(rank);
     }
 
-    public void printScoreStatus(List<ColorScoreDto> scores) {
+    public void printScoreStatus(ColorScoreDto... colorScoreDto) {
         System.out.println(SCORE_STATUS_INTRO);
-        scores.forEach(this::printScore);
+        Arrays.stream(colorScoreDto)
+                .forEach(this::printScore);
+        System.out.println();
     }
 
     private void printScore(ColorScoreDto colorScoreDto) {
         System.out.printf(SCORE_FORMAT, colorScoreDto.color(), colorScoreDto.score());
+    }
+
+    public void printGameResult(WinnerDto resultDto) {
+        System.out.println(RESULT_STATUS_INTRO);
+        if (resultDto.isDraw()) {
+            System.out.println(DRAW_FORMAT);
+            return;
+        }
+        System.out.printf(WINNER_FORMAT, resultDto.winner());
     }
 }

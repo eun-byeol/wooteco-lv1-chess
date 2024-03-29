@@ -1,5 +1,6 @@
 package chess.dto;
 
+import chess.dto.mapper.ColorMapper;
 import chess.model.material.Color;
 
 public record ColorScoreDto(String color, double score) {

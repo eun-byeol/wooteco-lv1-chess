@@ -1,10 +1,10 @@
-package chess.model.score;
+package chess.model.outcome;
 
 import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import chess.dto.PieceMapper;
+import chess.dto.mapper.PieceMapper;
 import chess.model.piece.Piece;
 import chess.model.position.Column;
 import chess.model.position.Position;
@@ -31,7 +31,7 @@ class ScoreCalculatorTest {
             "....rk.."
         );
         ScoreCalculator scoreCalculator = generate(snapShot);
-        assertThat(scoreCalculator.calculate(WHITE)).isEqualTo(19.5);
+        assertThat(scoreCalculator.calculate(WHITE).score()).isEqualTo(19.5);
     }
 
     private ScoreCalculator generate(List<String> snapShot) {
@@ -63,6 +63,6 @@ class ScoreCalculatorTest {
             "....rk.."
         );
         ScoreCalculator scoreCalculator = generate(snapShot);
-        assertThat(scoreCalculator.calculate(BLACK)).isEqualTo(20);
+        assertThat(scoreCalculator.calculate(BLACK).score()).isEqualTo(20);
     }
 }

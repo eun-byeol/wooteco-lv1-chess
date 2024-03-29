@@ -1,11 +1,18 @@
 package chess.controller;
 
+import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.WHITE;
+
 import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
+import chess.dto.WinnerDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.InitialBoardFactory;
 import chess.model.game.GameStatus;
+import chess.model.material.Color;
+import chess.model.outcome.Winner;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.position.Position;
 import chess.view.InputView;
 import chess.view.OutputView;
@@ -27,8 +34,12 @@ public final class ChessGame {
 
     public void run() {
         inputView.printGameIntro();
-        GameStatus gameStatus = new GameStatus(this::executeStart, this::executeMove,
-            this::executeStatus);
+        GameStatus gameStatus = new GameStatus(
+            this::executeStart,
+            this::executeMove,
+            this::executeStatus,
+            this::executeEnd
+        );
         BoardFactory boardFactory = new InitialBoardFactory();
         Board board = boardFactory.generate();
         while (gameStatus.isRunning()) {
@@ -53,15 +64,31 @@ public final class ChessGame {
     private boolean executeMove(List<String> commands, Board board) {
         Position source = Position.from(commands.get(SOURCE_INDEX));
         Position target = Position.from(commands.get(TARGET_INDEX));
-        boolean success = board.move(source, target);
+        boolean isKingCaught = board.move(source, target);
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
-        return success;
+        if (isKingCaught) {
+            Color color = board.lastTurn();
+            WinnerDto result = WinnerDto.from(color);
+            outputView.printGameResult(result);
+        }
+        return isKingCaught;
     }
 
     private void executeStatus(Board board) {
-        List<ColorScoreDto> scores = board.calculateScore();
-        outputView.printScoreStatus(scores);
+        ScoreCalculator scoreCalculator = board.calculateScore();
+        ColorScoreDto whiteScore = scoreCalculator.calculate(WHITE);
+        ColorScoreDto blackScore = scoreCalculator.calculate(BLACK);
+        outputView.printScoreStatus(whiteScore, blackScore);
+    }
+
+    private void executeEnd(Board board) {
+        ScoreCalculator scoreCalculator = board.calculateScore();
+        ColorScoreDto whiteScore = scoreCalculator.calculate(WHITE);
+        ColorScoreDto blackScore = scoreCalculator.calculate(BLACK);
+        outputView.printScoreStatus(whiteScore, blackScore);
+        WinnerDto winnerDto = Winner.of(whiteScore, blackScore);
+        outputView.printGameResult(winnerDto);
     }
 
     private <T> T retryOnException(Supplier<T> operation) {

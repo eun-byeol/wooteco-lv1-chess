@@ -1,5 +1,7 @@
 package chess.model.board;
 
+import static chess.model.Fixtures.A2;
+import static chess.model.Fixtures.A4;
 import static chess.model.Fixtures.B1;
 import static chess.model.Fixtures.B2;
 import static chess.model.Fixtures.B4;
@@ -23,8 +25,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
 import chess.model.CustomBoardFactory;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.Piece;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -151,7 +155,7 @@ class BoardTest {
         );
     }
 
-    @DisplayName("이동 시 King이 잡히면 false를 반환한다")
+    @DisplayName("이동 시 King이 잡히면 true를 반환한다")
     @Test
     void catchKing() {
         List<String> snapShot = List.of(
@@ -167,10 +171,10 @@ class BoardTest {
         BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
         Board board = boardFactory.generate();
 
-        assertThat(board.move(D4, C5)).isFalse();
+        assertThat(board.move(D4, C5)).isTrue();
     }
 
-    @DisplayName("이동 시 King이 잡히면 false를 반환한다")
+    @DisplayName("이동 시 King이 잡히지 않으면 false를 반환한다")
     @Test
     void catchChessman() {
         List<String> snapShot = List.of(
@@ -186,10 +190,10 @@ class BoardTest {
         BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
         Board board = boardFactory.generate();
 
-        assertThat(board.move(D4, C5)).isTrue();
+        assertThat(board.move(D4, C5)).isFalse();
     }
 
-    @DisplayName("색상 별 총 점수를 구한다")
+    @DisplayName("진영 별 총 점수를 구한다")
     @Test
     void calculateTotalScoreByColor() {
         List<String> snapShot = List.of(
@@ -205,12 +209,19 @@ class BoardTest {
         BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
         Board board = boardFactory.generate();
 
-        List<ColorScoreDto> actual = board.calculateScore();
-        List<ColorScoreDto> expected = List.of(
-            new ColorScoreDto("백팀", 19.5),
-            new ColorScoreDto("흑팀", 20)
+        ScoreCalculator scoreCalculator = board.calculateScore();
+        assertAll(
+            () -> assertThat(scoreCalculator.calculate(WHITE).score()).isEqualTo(19.5),
+            () -> assertThat(scoreCalculator.calculate(BLACK).score()).isEqualTo(20)
         );
+    }
 
-        assertThat(actual).containsExactlyElementsOf(expected);
+    @DisplayName("마지막으로 움직인 진영을 찾는다")
+    @Test
+    void findLastTurn() {
+        BoardFactory boardFactory = new InitialBoardFactory();
+        Board board = boardFactory.generate();
+        board.move(A2, A4);
+        assertThat(board.lastTurn()).isEqualTo(WHITE);
     }
 }

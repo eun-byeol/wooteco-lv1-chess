@@ -6,7 +6,7 @@ import chess.model.piece.None;
 import chess.model.piece.Piece;
 import chess.model.position.Position;
 import chess.model.position.Route;
-import chess.model.score.ScoreCalculator;
+import chess.model.outcome.ScoreCalculator;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class Board {
         pieces.put(target, findPiece(source));
         pieces.put(source, None.of());
         turn = turn.rotate();
-        return targetPiece.isNotKing();
+        return targetPiece.isKing();
     }
 
     private void validatePosition(Position source, Position target) {
@@ -59,12 +59,12 @@ public class Board {
         }
     }
 
-    public List<ColorScoreDto> calculateScore() {
-        ScoreCalculator scoreCalculator = new ScoreCalculator(pieces);
-        return Color.allColors()
-            .stream()
-            .map(color -> ColorScoreDto.of(color, scoreCalculator.calculate(color)))
-            .toList();
+    public ScoreCalculator calculateScore() {
+        return new ScoreCalculator(pieces);
+    }
+
+    public Color lastTurn() {
+        return turn.rotate();
     }
 
     public Piece findPiece(Position position) {

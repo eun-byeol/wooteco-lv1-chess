@@ -1,6 +1,6 @@
 package chess.model.board;
 
-import chess.dto.PieceMapper;
+import chess.dto.mapper.PieceMapper;
 import chess.model.piece.Piece;
 import chess.model.position.Column;
 import chess.model.position.Position;

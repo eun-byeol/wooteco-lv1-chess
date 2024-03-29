@@ -1,8 +1,9 @@
-package chess.dto;
+package chess.dto.mapper;
 
 import chess.model.material.Color;
 
 public enum ColorMapper {
+
     WHITE("백팀"),
     BLACK("흑팀"),
     NONE("없음");
@@ -21,5 +22,9 @@ public enum ColorMapper {
             return BLACK.displayName;
         }
         return NONE.displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 }

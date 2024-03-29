@@ -1,4 +1,4 @@
-package chess.dto;
+package chess.dto.mapper;
 
 import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
