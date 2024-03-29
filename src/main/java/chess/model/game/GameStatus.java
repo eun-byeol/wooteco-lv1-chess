@@ -42,15 +42,13 @@ public class GameStatus {
         Command command = Command.findCommand(commands.get(COMMAND_INDEX));
         if (command.isEnd()) {
             onEnd.accept(board);
-            return changeEnd();
+            return finishGame();
         }
         if (command.isStart()) {
-            GameStatus gameStatus = changeStart();
-            onStart.accept(board);
-            return gameStatus;
+            return executeStart(board);
         }
         if (command.isMove()) {
-            return changeStatus(commands, board);
+            return executeMove(commands, board);
         }
         if (command.isStatus()) {
             executeStatus(board);
@@ -58,34 +56,27 @@ public class GameStatus {
         return this;
     }
 
-    private GameStatus changeEnd() {
-        return new GameStatus(Status.END, onStart, onMove, onStatus, onEnd);
+    private GameStatus finishGame() {
+        return new GameStatus(Status.FINISHED, onStart, onMove, onStatus, onEnd);
     }
 
-    private GameStatus changeStart() {
+    private GameStatus executeStart(Board board) {
         if (status.isReady()) {
-            return new GameStatus(Status.START, onStart, onMove, onStatus, onEnd);
+            onStart.accept(board);
+            return new GameStatus(Status.RUNNING, onStart, onMove, onStatus, onEnd);
         }
         throw new UnsupportedOperationException("게임이 이미 진행 중 입니다.");
     }
 
-    private GameStatus changeStatus(List<String> commands, Board board) {
-        GameStatus gameStatus = changeMove();
+    private GameStatus executeMove(List<String> commands, Board board) {
+        if (status.isReady()) {
+            throw new UnsupportedOperationException("게임을 start 해 주세요.");
+        }
         boolean isKingCaught = onMove.test(commands, board);
         if (isKingCaught) {
-            return changeEnd();
+            return finishGame();
         }
-        return gameStatus;
-    }
-
-    private GameStatus changeMove() {
-        if (status.isMove()) {
-            return this;
-        }
-        if (status.isStart()) {
-            return new GameStatus(Status.MOVE, onStart, onMove, onStatus, onEnd);
-        }
-        throw new UnsupportedOperationException("게임을 start 해 주세요.");
+        return this;
     }
 
     private void executeStatus(Board board) {
@@ -95,19 +86,19 @@ public class GameStatus {
         onStatus.accept(board);
     }
 
-    public boolean isRunning() {
-        return status.isRunning();
-    }
-
-    public boolean isStarted() {
-        return status.isStart();
-    }
-
-    public boolean isMoved() {
-        return status.isMove();
-    }
-
     private boolean isReady() {
         return status.isReady();
+    }
+
+    public boolean isNotFinished() {
+        return status.isNotFinished();
+    }
+
+    public boolean isFinished() {
+        return status.isFinished();
+    }
+
+    public boolean isRunning() {
+        return status.isRunning();
     }
 }

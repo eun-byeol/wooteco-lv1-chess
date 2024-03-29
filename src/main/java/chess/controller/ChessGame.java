@@ -42,7 +42,7 @@ public final class ChessGame {
         );
         BoardFactory boardFactory = new InitialBoardFactory();
         Board board = boardFactory.generate();
-        while (gameStatus.isRunning()) {
+        while (gameStatus.isNotFinished()) {
             gameStatus = executeGame(board, gameStatus);
         }
     }
