@@ -73,4 +73,29 @@ public class PieceDao {
             throw new RuntimeException("기물 조회 실패");
         }
     }
+
+    public List<PieceDto> findAllByChessGameId(Long chessGameId) {
+        String query = "SELECT * FROM piece WHERE chessGameId = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, chessGameId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<PieceDto> pieceDtos = new ArrayList<>();
+            while (resultSet.next()) {
+                pieceDtos.add(
+                    new PieceDto(
+                        resultSet.getLong("id"),
+                        resultSet.getInt("row"),
+                        resultSet.getInt("column"),
+                        resultSet.getString("piece"),
+                        resultSet.getLong("chessGameId")
+                    )
+                );
+            }
+            return pieceDtos;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("체스 게임별 기물 전체 조회 실패");
+        }
+    }
 }
