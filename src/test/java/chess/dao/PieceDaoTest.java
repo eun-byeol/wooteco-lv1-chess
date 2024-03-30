@@ -21,8 +21,8 @@ class PieceDaoTest {
     @DisplayName("기물 저장 성공")
     @Test
     void addPiece() {
-        PieceDto pieceDto = new PieceDto(1, 1, "p", 1L);
-        pieceDao.addPiece(pieceDto);
-        assertThat(pieceDao.findAll()).contains(pieceDto);
+        PieceDto pieceDto = new PieceDto(null, 1, 1, "p", 1L);
+        Long id = pieceDao.addPiece(pieceDto);
+        assertThat(pieceDao.findById(id)).isPresent();
     }
 }
