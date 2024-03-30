@@ -1,5 +1,5 @@
 package chess.dto;
 
-public record ChessGameDto(Long id, String turn, Integer isRunning) {
+public record ChessGameDto(Long id, String turn) {
 
 }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import chess.dto.ChessGameDto;
 import chess.model.material.Color;
 import chess.util.DataBaseConnector;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,34 +23,33 @@ class ChessGameDaoTest {
     @DisplayName("체스 게임 저장 성공")
     @Test
     void addChessGame() {
-        ChessGameDto chessGameDto = new ChessGameDto(null, Color.WHITE.name(), 1);
+        ChessGameDto chessGameDto = new ChessGameDto(null, Color.WHITE.name());
         Long id = chessGameDao.addChessGame(chessGameDto);
         assertThat(chessGameDao.findById(id)).isPresent();
     }
 
-    @DisplayName("진행 중인 체스 게임 조회 성공")
+    @DisplayName("체스 게임 전체 조회 성공")
     @Test
-    void findRunningChessGame() {
-        ChessGameDto runningGame = new ChessGameDto(null, Color.WHITE.name(), 1);
-        ChessGameDto finishedGame = new ChessGameDto(null, Color.WHITE.name(), 0);
-        Long runningGameId = chessGameDao.addChessGame(runningGame);
-        Long finishedGameId = chessGameDao.addChessGame(finishedGame);
+    void findAllChessGame() {
+        ChessGameDto firstGame = new ChessGameDto(null, Color.WHITE.name());
+        ChessGameDto secondGame = new ChessGameDto(null, Color.WHITE.name());
+        Long firstGameId = chessGameDao.addChessGame(firstGame);
+        Long secondGameId = chessGameDao.addChessGame(secondGame);
 
-        ChessGameDto updatedRunningGame = new ChessGameDto(runningGameId, Color.WHITE.name(), 1);
-        ChessGameDto updatedFinishedGame = new ChessGameDto(finishedGameId, Color.WHITE.name(), 0);
+        List<ChessGameDto> chessGameDtos = chessGameDao.findAll();
 
-        assertThat(chessGameDao.findRunningGame())
-            .contains(updatedRunningGame)
-            .doesNotContain(updatedFinishedGame);
+        assertThat(chessGameDtos.stream().map(ChessGameDto::id))
+            .contains(firstGameId)
+            .contains(secondGameId);
     }
 
     @DisplayName("체스 게임 수정 성공")
     @Test
     void updateChessGame() {
-        ChessGameDto chessGameDto = new ChessGameDto(null, Color.BLACK.name(), 1);
+        ChessGameDto chessGameDto = new ChessGameDto(null, Color.BLACK.name());
         Long id = chessGameDao.addChessGame(chessGameDto);
 
-        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.WHITE.name(), 0);
+        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.WHITE.name());
         chessGameDao.updateChessGame(finishedGameDto);
 
         assertThat(chessGameDao.findById(id)).contains(finishedGameDto);

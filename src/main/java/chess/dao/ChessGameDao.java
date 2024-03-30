@@ -19,12 +19,11 @@ public class ChessGameDao {
     }
 
     public Long addChessGame(ChessGameDto chessGameDto) {
-        String query = "INSERT INTO chessgame VALUES(?, ?, ?)";
+        String query = "INSERT INTO chessgame VALUES(?, ?)";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, "0");
             preparedStatement.setString(2, chessGameDto.turn());
-            preparedStatement.setString(3, String.valueOf(chessGameDto.isRunning()));
             preparedStatement.executeUpdate();
             return findLastId();
         } catch (SQLException e) {
@@ -58,8 +57,7 @@ public class ChessGameDao {
                 return Optional.of(
                     new ChessGameDto(
                         resultSet.getLong("id"),
-                        resultSet.getString("turn"),
-                        resultSet.getInt("isRunning")
+                        resultSet.getString("turn")
                     )
                 );
             }
@@ -70,8 +68,8 @@ public class ChessGameDao {
         }
     }
 
-    public List<ChessGameDto> findRunningGame() {
-        String query = "SELECT * FROM chessgame WHERE isRunning = 1";
+    public List<ChessGameDto> findAll() {
+        String query = "SELECT * FROM chessgame";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -80,25 +78,23 @@ public class ChessGameDao {
                 chessGameDtos.add(
                     new ChessGameDto(
                         resultSet.getLong("id"),
-                        resultSet.getString("turn"),
-                        resultSet.getInt("isRunning")
+                        resultSet.getString("turn")
                     )
                 );
             }
             return chessGameDtos;
         } catch (SQLException e) {
             System.err.println(e.getMessage());
-            throw new RuntimeException("진행 중인 체스 게임 조회 실패");
+            throw new RuntimeException("체스 게임 전체 조회 실패");
         }
     }
 
     public void updateChessGame(ChessGameDto chessGameDto) {
-        String query = "UPDATE chessgame SET turn = ?, isRunning = ? WHERE id = ?";
+        String query = "UPDATE chessgame SET turn = ? WHERE id = ?";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, chessGameDto.turn());
-            preparedStatement.setInt(2, chessGameDto.isRunning());
-            preparedStatement.setLong(3, chessGameDto.id());
+            preparedStatement.setLong(2, chessGameDto.id());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());

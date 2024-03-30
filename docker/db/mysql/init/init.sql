@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS `chessgame`
 (
     `id`        BIGINT     NOT NULL AUTO_INCREMENT,
     `turn`      VARCHAR(8) NOT NULL,
-    `isRunning` TINYINT(1) NOT NULL,
     PRIMARY KEY (`id`)
 );
 
