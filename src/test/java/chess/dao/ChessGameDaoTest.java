@@ -43,14 +43,14 @@ class ChessGameDaoTest {
             .doesNotContain(updatedFinishedGame);
     }
 
-    @DisplayName("체스 게임 종료 상태로 수정 성공")
+    @DisplayName("체스 게임 수정 성공")
     @Test
-    void updateFinishedStatus() {
+    void updateChessGame() {
         ChessGameDto chessGameDto = new ChessGameDto(null, Color.BLACK.name(), 1);
         Long id = chessGameDao.addChessGame(chessGameDto);
 
-        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.BLACK.name(), 0);
-        chessGameDao.updateIsRunning(finishedGameDto);
+        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.WHITE.name(), 0);
+        chessGameDao.updateChessGame(finishedGameDto);
 
         assertThat(chessGameDao.findById(id)).contains(finishedGameDto);
     }

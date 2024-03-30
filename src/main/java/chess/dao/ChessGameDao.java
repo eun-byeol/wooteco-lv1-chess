@@ -92,12 +92,13 @@ public class ChessGameDao {
         }
     }
 
-    public void updateIsRunning(ChessGameDto chessGameDto) {
-        String query = "UPDATE chessgame SET isRunning = ? WHERE id = ?";
+    public void updateChessGame(ChessGameDto chessGameDto) {
+        String query = "UPDATE chessgame SET turn = ?, isRunning = ? WHERE id = ?";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, String.valueOf(chessGameDto.isRunning()));
-            preparedStatement.setString(2, String.valueOf(chessGameDto.id()));
+            preparedStatement.setString(1, chessGameDto.turn());
+            preparedStatement.setInt(2, chessGameDto.isRunning());
+            preparedStatement.setLong(3, chessGameDto.id());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
