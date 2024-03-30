@@ -14,6 +14,7 @@ import chess.model.position.Column;
 import chess.model.position.Position;
 import chess.model.position.Row;
 import chess.util.DataBaseConnector;
+import java.util.List;
 import java.util.Map;
 
 public class ChessService {
@@ -63,5 +64,10 @@ public class ChessService {
 
     private Piece createPiece(PieceDto pieceDto) {
         return PieceMapper.deserialize(pieceDto.piece());
+    }
+
+    public boolean isGameSaved() {
+        List<ChessGameDto> chessGames = chessGameDao.findAll();
+        return chessGames.size() > 0;
     }
 }
