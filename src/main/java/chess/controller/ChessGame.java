@@ -14,6 +14,7 @@ import chess.model.material.Color;
 import chess.model.outcome.ScoreCalculator;
 import chess.model.outcome.Winner;
 import chess.model.position.Position;
+import chess.service.ChessService;
 import chess.view.InputView;
 import chess.view.OutputView;
 import java.util.List;
@@ -26,10 +27,12 @@ public final class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final ChessService chessService;
 
     public ChessGame(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        chessService = new ChessService();
     }
 
     public void run() {
@@ -40,11 +43,20 @@ public final class ChessGame {
             this::executeStatus,
             this::executeEnd
         );
-        BoardFactory boardFactory = new InitialBoardFactory();
-        Board board = boardFactory.generate();
+        Board board = prepareBoard();
         while (gameStatus.isNotFinished()) {
             gameStatus = executeGame(board, gameStatus);
         }
+    }
+
+    private Board prepareBoard() {
+        if (chessService.isGameSaved()) {
+            return chessService.loadGame();
+        }
+        BoardFactory boardFactory = new InitialBoardFactory();
+        Board board = boardFactory.generate();
+        Long gameId = chessService.saveGame(board);
+        return board.setId(gameId);
     }
 
     private GameStatus executeGame(Board board, GameStatus gameStatus) {

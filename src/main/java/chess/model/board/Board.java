@@ -11,10 +11,16 @@ import java.util.Map;
 public class Board {
 
     private final Map<Position, Piece> pieces;
+    private final Long id;
     private Color turn;
 
     public Board(Map<Position, Piece> pieces, Color turn) {
+        this(pieces, 0L, turn);
+    }
+
+    private Board(Map<Position, Piece> pieces, Long id, Color turn) {
         this.pieces = pieces;
+        this.id = id;
         this.turn = turn;
     }
 
@@ -71,5 +77,13 @@ public class Board {
 
     public Piece findPiece(Position position) {
         return pieces.get(position);
+    }
+
+    public Board setId(Long gameId) {
+        return new Board(pieces, gameId, turn);
+    }
+
+    public Long getId() {
+        return id;
     }
 }
