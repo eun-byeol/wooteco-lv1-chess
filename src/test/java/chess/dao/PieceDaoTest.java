@@ -41,4 +41,14 @@ class PieceDaoTest {
             .contains(firstPieceId)
             .doesNotContain(secondPieceId);
     }
+
+    @DisplayName("기물 수정 성공")
+    @Test
+    void updatePiece() {
+        PieceDto pieceDto = new PieceDto(null, 5, 3, "r", 3L);
+        Long id = pieceDao.addPiece(pieceDto);
+        PieceDto updatedPieceDto = new PieceDto(id, 7, 3, "r", 3L);
+        pieceDao.updatePiece(updatedPieceDto);
+        assertThat(pieceDao.findById(id)).contains(updatedPieceDto);
+    }
 }

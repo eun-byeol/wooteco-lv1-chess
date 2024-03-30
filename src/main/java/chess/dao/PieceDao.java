@@ -60,8 +60,8 @@ public class PieceDao {
                 return Optional.of(
                     new PieceDto(
                         resultSet.getLong("id"),
-                        resultSet.getInt("row"),
-                        resultSet.getInt("column"),
+                        resultSet.getInt("positionRow"),
+                        resultSet.getInt("positionColumn"),
                         resultSet.getString("piece"),
                         resultSet.getLong("chessGameId")
                     )
@@ -85,8 +85,8 @@ public class PieceDao {
                 pieceDtos.add(
                     new PieceDto(
                         resultSet.getLong("id"),
-                        resultSet.getInt("row"),
-                        resultSet.getInt("column"),
+                        resultSet.getInt("positionRow"),
+                        resultSet.getInt("positionColumn"),
                         resultSet.getString("piece"),
                         resultSet.getLong("chessGameId")
                     )
@@ -96,6 +96,21 @@ public class PieceDao {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임별 기물 전체 조회 실패");
+        }
+    }
+
+    public void updatePiece(PieceDto pieceDto) {
+        String query = "UPDATE piece SET positionRow = ?, positionColumn = ?, piece = ? WHERE id = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, pieceDto.row());
+            preparedStatement.setInt(2, pieceDto.column());
+            preparedStatement.setString(3, pieceDto.piece());
+            preparedStatement.setLong(4, pieceDto.id());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("기물 수정 실패");
         }
     }
 }

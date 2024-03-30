@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS `chessgame`
 
 CREATE TABLE IF NOT EXISTS `piece`
 (
-    `id`          BIGINT      NOT NULL AUTO_INCREMENT,
-    `row`         INT         NOT NULL,
-    `column`      INT         NOT NULL,
-    `piece`       VARCHAR(16) NOT NULL,
-    `chessGameId` BIGINT      NOT NULL,
+    `id`             BIGINT      NOT NULL AUTO_INCREMENT,
+    `positionRow`    INT         NOT NULL,
+    `positionColumn` INT         NOT NULL,
+    `piece`          VARCHAR(16) NOT NULL,
+    `chessGameId`    BIGINT      NOT NULL,
     PRIMARY KEY (`id`)
 );
