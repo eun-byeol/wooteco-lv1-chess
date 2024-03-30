@@ -6,6 +6,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ChessGameDao {
@@ -55,7 +57,7 @@ public class ChessGameDao {
             if (resultSet.next()) {
                 return Optional.of(
                     new ChessGameDto(
-                        resultSet.getInt("id"),
+                        resultSet.getLong("id"),
                         resultSet.getString("turn"),
                         resultSet.getInt("isRunning")
                     )
@@ -65,6 +67,28 @@ public class ChessGameDao {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임 조회 실패");
+        }
+    }
+
+    public List<ChessGameDto> findRunningGame() {
+        String query = "SELECT * FROM chessgame WHERE isRunning = 1";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+            List<ChessGameDto> chessGameDtos = new ArrayList<>();
+            while (resultSet.next()) {
+                chessGameDtos.add(
+                    new ChessGameDto(
+                        resultSet.getLong("id"),
+                        resultSet.getString("turn"),
+                        resultSet.getInt("isRunning")
+                    )
+                );
+            }
+            return chessGameDtos;
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("진행 중인 체스 게임 조회 실패");
         }
     }
 }
