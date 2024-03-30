@@ -65,6 +65,10 @@ public class Board {
         return turn.rotate();
     }
 
+    public String turnName() {
+        return turn.name();
+    }
+
     public Piece findPiece(Position position) {
         return pieces.get(position);
     }
