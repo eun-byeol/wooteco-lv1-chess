@@ -1,15 +1,10 @@
 package chess.dao;
 
-import static org.assertj.core.api.AbstractSoftAssertions.assertAll;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import chess.dto.ChessGameDto;
 import chess.model.material.Color;
 import chess.util.DataBaseConnector;
-import java.sql.SQLException;
-import java.util.List;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,5 +41,17 @@ class ChessGameDaoTest {
         assertThat(chessGameDao.findRunningGame())
             .contains(updatedRunningGame)
             .doesNotContain(updatedFinishedGame);
+    }
+
+    @DisplayName("체스 게임 종료 상태로 수정 성공")
+    @Test
+    void updateFinishedStatus() {
+        ChessGameDto chessGameDto = new ChessGameDto(null, Color.BLACK.name(), 1);
+        Long id = chessGameDao.addChessGame(chessGameDto);
+
+        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.BLACK.name(), 0);
+        chessGameDao.updateIsRunning(finishedGameDto);
+
+        assertThat(chessGameDao.findById(id)).contains(finishedGameDto);
     }
 }

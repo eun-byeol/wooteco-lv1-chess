@@ -91,4 +91,17 @@ public class ChessGameDao {
             throw new RuntimeException("진행 중인 체스 게임 조회 실패");
         }
     }
+
+    public void updateIsRunning(ChessGameDto chessGameDto) {
+        String query = "UPDATE chessgame SET isRunning = ? WHERE id = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, String.valueOf(chessGameDto.isRunning()));
+            preparedStatement.setString(2, String.valueOf(chessGameDto.id()));
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("체스 게임 수정 실패");
+        }
+    }
 }
