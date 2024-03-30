@@ -28,7 +28,7 @@ public final class OutputView {
     }
 
     private void printRank(RankDto rankDto) {
-        String rank = String.join(RANK_DELIMITER, rankDto.getRank());
+        String rank = String.join(RANK_DELIMITER, rankDto.rank());
         System.out.println(rank);
     }
 

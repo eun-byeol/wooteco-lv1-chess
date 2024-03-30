@@ -57,7 +57,7 @@ class BoardTest {
     private List<String> combineRanks(BoardDto boardDto) {
         return boardDto.getRanks()
             .stream()
-            .map(rankDto -> String.join("", rankDto.getRank()))
+            .map(rankDto -> String.join("", rankDto.rank()))
             .toList();
     }
 
