@@ -9,7 +9,6 @@ import java.util.Arrays;
 public final class OutputView {
 
     private static final String NEWLINE = System.lineSeparator();
-
     private static final String CHESS_GAME_INTRO = "> 체스 게임을 시작합니다.";
     private static final String CONTINUE_GAME_INTRO = NEWLINE + "## 진행 중인 게임을 불러왔습니다." + NEWLINE;
     private static final CharSequence RANK_DELIMITER = "";
