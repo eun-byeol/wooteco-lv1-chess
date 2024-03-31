@@ -1,10 +1,16 @@
-# java-chess
-
-체스 미션 저장소
-
-## 우아한테크코스 코드리뷰
-
-- [온라인 코드 리뷰 과정](https://github.com/woowacourse/woowacourse-docs/blob/master/maincourse/README.md)
+# DB 실행 방법
+1. docker-compose.yml 파일 위치로 이동
+```agsl
+cd docker
+```
+2. 도커 실행
+```agsl
+ docker-compose -p chess up -d
+```
+3. 실행 종료
+```agsl
+docker-compose -p chess down
+```
 
 # 용어집
 
@@ -101,7 +107,7 @@
 - end(승패 결정)
     - [x] 삭제
 - end(명령어)
-    - [ ] 수정
+    - [x] 수정
 
 ## 입력
 
