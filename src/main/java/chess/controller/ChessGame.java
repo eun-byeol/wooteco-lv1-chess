@@ -7,12 +7,10 @@ import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
 import chess.dto.WinnerDto;
 import chess.model.board.Board;
-import chess.model.board.BoardFactory;
 import chess.model.board.InitialBoardFactory;
 import chess.model.game.GameStatus;
 import chess.model.material.Color;
 import chess.model.outcome.ScoreCalculator;
-import chess.model.outcome.Winner;
 import chess.model.position.Position;
 import chess.service.ChessService;
 import chess.view.InputView;
@@ -27,16 +25,14 @@ public final class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final ChessService chessService;
+    private final ChessService chessService = new ChessService();
 
     public ChessGame(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-        chessService = new ChessService();
     }
 
     public void run() {
-        inputView.printGameIntro();
         GameStatus gameStatus = new GameStatus(
             this::executeStart,
             this::executeMove,
@@ -50,13 +46,13 @@ public final class ChessGame {
     }
 
     private Board prepareBoard() {
+        outputView.printGameIntro();
         if (chessService.isGameSaved()) {
+            outputView.printContinueGame();
             return chessService.loadGame();
         }
-        BoardFactory boardFactory = new InitialBoardFactory();
-        Board board = boardFactory.generate();
-        Long gameId = chessService.saveGame(board);
-        return board.setId(gameId);
+        Board board = new InitialBoardFactory().generate();
+        return chessService.saveGame(board);
     }
 
     private GameStatus executeGame(Board board, GameStatus gameStatus) {
@@ -65,6 +61,7 @@ public final class ChessGame {
 
     private GameStatus executeCommand(Board board, GameStatus gameStatus) {
         List<String> commands = inputView.askGameCommands();
+
         return gameStatus.action(commands, board);
     }
 
@@ -100,8 +97,8 @@ public final class ChessGame {
         ColorScoreDto whiteScore = scoreCalculator.calculate(WHITE);
         ColorScoreDto blackScore = scoreCalculator.calculate(BLACK);
         outputView.printScoreStatus(whiteScore, blackScore);
-        WinnerDto winnerDto = Winner.of(whiteScore, blackScore);
-        outputView.printGameResult(winnerDto);
+        chessService.updateGame(board);
+        outputView.printSaveGame();
     }
 
     private <T> T retryOnException(Supplier<T> operation) {

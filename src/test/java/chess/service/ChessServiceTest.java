@@ -3,10 +3,8 @@ package chess.service;
 import static chess.model.Fixtures.A2;
 import static chess.model.Fixtures.A4;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.dao.ChessGameDao;
-import chess.dto.BoardDto;
 import chess.dto.ChessGameDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
@@ -25,6 +23,7 @@ import org.junit.jupiter.api.Test;
 class ChessServiceTest {
 
     private final ChessService chessService = new ChessService();
+    private final ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
 
     @BeforeEach
     void initializeDataBase() {
@@ -55,54 +54,45 @@ class ChessServiceTest {
             Color.BLACK,
             0L
         );
-        Board board = boardFactory.generate();
-        Long id = chessService.saveGame(board);
-        Board savedBoard = chessService.loadGame();
-        assertThat(savedBoard.getId()).isEqualTo(id);
+        Board expectedBoard = chessService.saveGame(boardFactory.generate());
+        Board actualBoard = chessService.loadGame();
+        assertThat(actualBoard.getId()).isEqualTo(expectedBoard.getId());
     }
 
-    @DisplayName("저장된 게임이 없으면 생성하여 로드한다")
+    @DisplayName("게임을 저장한다")
     @Test
-    void loadGameWithInitialGame() {
-        boolean isGameSaved = chessService.isGameSaved();
-        Board actualBoard = chessService.loadGame();
-        Board expectedBoard = new InitialBoardFactory().generate();
+    void saveGame() {
+        BoardFactory boardFactory = new InitialBoardFactory();
+        Board savedBoard = chessService.saveGame(boardFactory.generate());
+        ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
 
-        BoardDto actualBoardDto = BoardDto.from(actualBoard);
-        BoardDto expectedBoardDto = BoardDto.from(expectedBoard);
-
-        assertAll(
-            () -> assertThat(isGameSaved).isFalse(),
-            () -> assertThat(actualBoardDto.getRanks()).isEqualTo(expectedBoardDto.getRanks())
-        );
+        ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
+        assertThat(chessGameDao.findById(chessGameDto.id())).isPresent();
     }
 
     @DisplayName("저장된 게임을 삭제한다")
     @Test
     void deleteGame() {
         BoardFactory boardFactory = new InitialBoardFactory();
-        Board board = boardFactory.generate();
-        Long id = chessService.saveGame(board);
+        Board savedBoard = chessService.saveGame(boardFactory.generate());
+        ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
 
-        chessService.deleteGame(id);
+        chessService.deleteGame(chessGameDto.id());
 
-        ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
-        assertThat(chessGameDao.findById(id)).isEmpty();
+        assertThat(chessGameDao.findById(chessGameDto.id())).isEmpty();
     }
 
     @DisplayName("저장된 게임을 수정한다")
     @Test
     void updateGame() {
         BoardFactory boardFactory = new InitialBoardFactory();
-        Board board = boardFactory.generate();
-        Long id = chessService.saveGame(board);
-        board = board.setId(id);
+        Board board = chessService.saveGame(boardFactory.generate());
+
         board.move(A2, A4);
         chessService.updateGame(board);
         ChessGameDto expectedGameDto = ChessGameDto.from(board);
 
-        ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
-        assertThat(chessGameDao.findById(id))
+        assertThat(chessGameDao.findById(board.getId()))
             .contains(expectedGameDto);
     }
 }
