@@ -1,7 +1,7 @@
 package chess.dao;
 
+import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
-import chess.util.DataBaseConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

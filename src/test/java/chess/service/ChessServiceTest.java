@@ -4,14 +4,16 @@ import static chess.model.Fixtures.A2;
 import static chess.model.Fixtures.A4;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import chess.TestConnector;
 import chess.dao.ChessGameDao;
+import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
 import chess.model.board.InitialBoardFactory;
 import chess.model.material.Color;
-import chess.util.DataBaseConnector;
+import chess.db.ProductionConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -22,13 +24,14 @@ import org.junit.jupiter.api.Test;
 
 class ChessServiceTest {
 
-    private final ChessService chessService = new ChessService();
-    private final ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
+    private final DataBaseConnector connector = new TestConnector();
+    private final ChessGameDao chessGameDao = new ChessGameDao(connector);
+    private final ChessService chessService = new ChessService(chessGameDao);
 
     @BeforeEach
     void initializeDataBase() {
         String query = "TRUNCATE TABLE chessgame";
-        try (Connection connection = new DataBaseConnector().getConnection();
+        try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -65,8 +68,6 @@ class ChessServiceTest {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board savedBoard = chessService.saveGame(boardFactory.generate());
         ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
-
-        ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
         assertThat(chessGameDao.findById(chessGameDto.id())).isPresent();
     }
 

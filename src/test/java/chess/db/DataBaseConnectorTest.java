@@ -1,4 +1,4 @@
-package chess.util;
+package chess.db;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class DataBaseConnectorTest {
 
-    DataBaseConnector connector = new DataBaseConnector();
+    ProductionConnector connector = new ProductionConnector();
 
     @DisplayName("DB 접속 테스트")
     @Test

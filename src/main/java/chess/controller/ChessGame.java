@@ -3,6 +3,9 @@ package chess.controller;
 import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
 
+import chess.dao.ChessGameDao;
+import chess.db.DataBaseConnector;
+import chess.db.ProductionConnector;
 import chess.dto.BoardDto;
 import chess.dto.ColorScoreDto;
 import chess.dto.WinnerDto;
@@ -25,11 +28,13 @@ public final class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final ChessService chessService = new ChessService();
+    private final ChessService chessService;
 
     public ChessGame(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        DataBaseConnector dataBaseConnector = new ProductionConnector();
+        chessService = new ChessService(new ChessGameDao(dataBaseConnector));
     }
 
     public void run() {

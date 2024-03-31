@@ -2,9 +2,10 @@ package chess.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import chess.TestConnector;
+import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
 import chess.model.material.Color;
-import chess.util.DataBaseConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,12 +16,13 @@ import org.junit.jupiter.api.Test;
 
 class ChessGameDaoTest {
 
-    private final ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
+    private final DataBaseConnector connector = new TestConnector();
+    private final ChessGameDao chessGameDao = new ChessGameDao(connector);
 
     @BeforeEach
     void initializeDataBase() {
         String query = "TRUNCATE TABLE chessgame";
-        try (Connection connection = new DataBaseConnector().getConnection();
+        try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

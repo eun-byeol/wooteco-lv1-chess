@@ -1,16 +1,13 @@
-package chess.util;
+package chess;
 
+import chess.db.DataBaseConnector;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DataBaseConnector {
+public final class TestConnector implements DataBaseConnector {
 
-    private static final String SERVER = "localhost:13306";
-    private static final String DATABASE = "chess";
-    private static final String OPTION = "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "root";
+    private static final String DATABASE = "chess_test";
 
     public Connection getConnection() {
         try {

@@ -3,11 +3,8 @@ package chess.service;
 import chess.dao.ChessGameDao;
 import chess.dto.ChessGameDto;
 import chess.model.board.Board;
-import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
-import chess.model.board.InitialBoardFactory;
 import chess.model.material.Color;
-import chess.util.DataBaseConnector;
 import java.util.Arrays;
 import java.util.List;
 
@@ -15,9 +12,8 @@ public class ChessService {
 
     private final ChessGameDao chessGameDao;
 
-    public ChessService() {
-        DataBaseConnector connector = new DataBaseConnector();
-        chessGameDao = new ChessGameDao(connector);
+    public ChessService(ChessGameDao chessGameDao) {
+        this.chessGameDao = chessGameDao;
     }
 
     public boolean isGameSaved() {
