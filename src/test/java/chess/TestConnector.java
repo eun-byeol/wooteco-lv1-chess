@@ -8,11 +8,11 @@ import java.sql.SQLException;
 public final class TestConnector implements DataBaseConnector {
 
     private static final String DATABASE = "chess_test";
+    private static final String URL = "jdbc:mysql://" + SERVER + "/" + DATABASE + OPTION;
 
     public Connection getConnection() {
         try {
-            return DriverManager.getConnection("jdbc:mysql://" + SERVER + "/" + DATABASE + OPTION,
-                USERNAME, PASSWORD);
+            return DriverManager.getConnection(URL, USERNAME, PASSWORD);
         } catch (final SQLException e) {
             System.err.println("DB 연결 오류:" + e.getMessage());
             e.printStackTrace();

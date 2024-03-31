@@ -10,12 +10,14 @@ import java.util.Map;
 
 public class Board {
 
+    private static final Long DEFAULT_ID = 0L;
+
     private final Map<Position, Piece> pieces;
     private final Long id;
     private Color turn;
 
     public Board(Map<Position, Piece> pieces, Color turn) {
-        this(pieces, 0L, turn);
+        this(pieces, DEFAULT_ID, turn);
     }
 
     public Board(Map<Position, Piece> pieces, Long id, Color turn) {
