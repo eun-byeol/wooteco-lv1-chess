@@ -13,7 +13,6 @@ import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
 import chess.model.board.InitialBoardFactory;
 import chess.model.material.Color;
-import chess.db.ProductionConnector;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -54,8 +53,8 @@ class ChessServiceTest {
                 ".p.q....",
                 "....k..."
             ),
-            Color.BLACK,
-            0L
+            0L,
+            Color.BLACK
         );
         Board expectedBoard = chessService.saveGame(boardFactory.generate());
         Board actualBoard = chessService.loadGame();

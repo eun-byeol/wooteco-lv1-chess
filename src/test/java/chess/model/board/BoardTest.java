@@ -73,7 +73,7 @@ class BoardTest {
             ".p.q....",
             "....k..."
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, BLACK, 0L);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, BLACK);
         Board board = boardFactory.generate();
         BoardDto boardDto = BoardDto.from(board);
         List<String> actual = combineRanks(boardDto);
@@ -165,7 +165,7 @@ class BoardTest {
             "........",
             ".......k"
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
         Board board = boardFactory.generate();
 
         assertThat(board.move(D4, C5)).isTrue();
@@ -184,7 +184,7 @@ class BoardTest {
             "........",
             ".......k"
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
         Board board = boardFactory.generate();
 
         assertThat(board.move(D4, C5)).isFalse();
@@ -203,7 +203,7 @@ class BoardTest {
             ".....pp.",
             "....rk.."
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
         Board board = boardFactory.generate();
 
         ScoreCalculator scoreCalculator = board.calculateScore();

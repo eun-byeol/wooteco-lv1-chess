@@ -6,13 +6,13 @@ import java.util.List;
 public final class CustomBoardFactory extends BoardFactory {
 
     private final List<String> pieces;
-    private final Color turn;
     private final Long id;
+    private final Color turn;
 
-    public CustomBoardFactory(List<String> pieces, Color turn, Long id) {
+    public CustomBoardFactory(List<String> pieces, Long id, Color turn) {
         this.pieces = pieces;
-        this.turn = turn;
         this.id = id;
+        this.turn = turn;
     }
 
     @Override

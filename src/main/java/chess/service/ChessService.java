@@ -5,7 +5,6 @@ import chess.dto.ChessGameDto;
 import chess.model.board.Board;
 import chess.model.board.CustomBoardFactory;
 import chess.model.material.Color;
-import java.util.Arrays;
 import java.util.List;
 
 public class ChessService {
@@ -22,23 +21,22 @@ public class ChessService {
     }
 
     public Board loadGame() {
-        ChessGameDto chessGameDto = chessGameDao.findAll()
-            .stream()
-            .findFirst()
-            .orElseThrow(() -> new UnsupportedOperationException("저장된 게임이 없습니다."));
-        List<String> pieces = convert(chessGameDto.pieces());
+        ChessGameDto chessGameDto = findFirstChessGameDto();
+        List<String> pieces = chessGameDto.unJoinPieces();
         Color turn = Color.valueOf(chessGameDto.turn());
         CustomBoardFactory customBoardFactory = new CustomBoardFactory(
             pieces,
-            turn,
-            chessGameDto.id()
+            chessGameDto.id(),
+            turn
         );
         return customBoardFactory.generate();
     }
 
-    private List<String> convert(String pieces) {
-        return Arrays.stream(pieces.split("/"))
-            .toList();
+    private ChessGameDto findFirstChessGameDto() {
+        return chessGameDao.findAll()
+            .stream()
+            .findFirst()
+            .orElseThrow(() -> new UnsupportedOperationException("저장된 게임이 없습니다."));
     }
 
     public Board saveGame(Board board) {
