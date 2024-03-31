@@ -18,7 +18,7 @@ public class Board {
         this(pieces, 0L, turn);
     }
 
-    private Board(Map<Position, Piece> pieces, Long id, Color turn) {
+    public Board(Map<Position, Piece> pieces, Long id, Color turn) {
         this.pieces = pieces;
         this.id = id;
         this.turn = turn;

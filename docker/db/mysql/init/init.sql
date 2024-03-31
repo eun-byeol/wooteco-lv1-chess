@@ -7,17 +7,8 @@ USE `chess`;
 
 CREATE TABLE IF NOT EXISTS `chessgame`
 (
-    `id`        BIGINT     NOT NULL AUTO_INCREMENT,
-    `turn`      VARCHAR(8) NOT NULL,
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `piece`
-(
-    `id`             BIGINT      NOT NULL AUTO_INCREMENT,
-    `positionRow`    INT         NOT NULL,
-    `positionColumn` INT         NOT NULL,
-    `piece`          VARCHAR(16) NOT NULL,
-    `chessGameId`    BIGINT      NOT NULL,
+    `id`     BIGINT      NOT NULL AUTO_INCREMENT,
+    `turn`   VARCHAR(8)  NOT NULL,
+    `pieces` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`)
 );

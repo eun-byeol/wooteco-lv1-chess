@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import chess.dto.ChessGameDto;
 import chess.model.material.Color;
 import chess.util.DataBaseConnector;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,29 +15,47 @@ import org.junit.jupiter.api.Test;
 
 class ChessGameDaoTest {
 
-    private final DataBaseConnector connector = new DataBaseConnector();
-    private ChessGameDao chessGameDao;
+    private final ChessGameDao chessGameDao = new ChessGameDao(new DataBaseConnector());
 
     @BeforeEach
-    void setUp() {
-        chessGameDao = new ChessGameDao(connector);
+    void initializeDataBase() {
+        String query = "TRUNCATE TABLE chessgame";
+        try (Connection connection = new DataBaseConnector().getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("DB 초기화 실패");
+        }
     }
 
     @DisplayName("체스 게임 저장 성공")
     @Test
     void addChessGame() {
-        ChessGameDto chessGameDto = new ChessGameDto(null, Color.WHITE.name());
-        Long id = chessGameDao.addChessGame(chessGameDto);
+        ChessGameDto chessGameDto = new ChessGameDto(
+            0L,
+            Color.WHITE.name(),
+            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
+        );
+        Long id = chessGameDao.add(chessGameDto);
         assertThat(chessGameDao.findById(id)).isPresent();
     }
 
     @DisplayName("체스 게임 전체 조회 성공")
     @Test
     void findAllChessGame() {
-        ChessGameDto firstGame = new ChessGameDto(null, Color.WHITE.name());
-        ChessGameDto secondGame = new ChessGameDto(null, Color.WHITE.name());
-        Long firstGameId = chessGameDao.addChessGame(firstGame);
-        Long secondGameId = chessGameDao.addChessGame(secondGame);
+        ChessGameDto firstGame = new ChessGameDto(
+            0L,
+            Color.WHITE.name(),
+            "......../......../K...P.../......../......../......../......../K...P..."
+        );
+        ChessGameDto secondGame = new ChessGameDto(
+            0L,
+            Color.BLACK.name(),
+            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
+        );
+        Long firstGameId = chessGameDao.add(firstGame);
+        Long secondGameId = chessGameDao.add(secondGame);
 
         List<ChessGameDto> chessGameDtos = chessGameDao.findAll();
 
@@ -46,12 +67,22 @@ class ChessGameDaoTest {
     @DisplayName("체스 게임 수정 성공")
     @Test
     void updateChessGame() {
-        ChessGameDto chessGameDto = new ChessGameDto(null, Color.BLACK.name());
-        Long id = chessGameDao.addChessGame(chessGameDto);
+        ChessGameDto before = new ChessGameDto(
+            0L,
+            Color.WHITE.name(),
+            "......../......../K...P.../......../......../......../......../K...P..."
+        );
+        Long id = chessGameDao.add(before);
 
-        ChessGameDto finishedGameDto = new ChessGameDto(id, Color.WHITE.name());
-        chessGameDao.updateChessGame(finishedGameDto);
+        ChessGameDto after = new ChessGameDto(
+            id,
+            Color.BLACK.name(),
+            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
+        );
 
-        assertThat(chessGameDao.findById(id)).contains(finishedGameDto);
+        chessGameDao.update(after);
+
+        assertThat(chessGameDao.findById(id))
+            .contains(after);
     }
 }

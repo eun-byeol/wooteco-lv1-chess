@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.dto.BoardDto;
-import chess.model.CustomBoardFactory;
 import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.Piece;
 import java.util.List;
@@ -74,7 +73,7 @@ class BoardTest {
             ".p.q....",
             "....k..."
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, BLACK);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, BLACK, 0L);
         Board board = boardFactory.generate();
         BoardDto boardDto = BoardDto.from(board);
         List<String> actual = combineRanks(boardDto);
@@ -166,7 +165,7 @@ class BoardTest {
             "........",
             ".......k"
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
         Board board = boardFactory.generate();
 
         assertThat(board.move(D4, C5)).isTrue();
@@ -185,7 +184,7 @@ class BoardTest {
             "........",
             ".......k"
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
         Board board = boardFactory.generate();
 
         assertThat(board.move(D4, C5)).isFalse();
@@ -204,7 +203,7 @@ class BoardTest {
             ".....pp.",
             "....rk.."
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, WHITE, 0L);
         Board board = boardFactory.generate();
 
         ScoreCalculator scoreCalculator = board.calculateScore();
