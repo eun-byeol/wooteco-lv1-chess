@@ -70,4 +70,9 @@ public class ChessService {
         List<ChessGameDto> chessGames = chessGameDao.findAll();
         return chessGames.size() > 0;
     }
+
+    public void deleteGame(Long id) {
+        chessGameDao.deleteChessGame(id);
+        pieceDao.deletePieceByChessGameId(id);
+    }
 }

@@ -83,6 +83,7 @@ public final class ChessGame {
             Color color = board.lastTurn();
             WinnerDto result = WinnerDto.from(color);
             outputView.printGameResult(result);
+            chessService.deleteGame(board.getId());
         }
         return isKingCaught;
     }

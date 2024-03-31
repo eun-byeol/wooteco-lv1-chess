@@ -101,4 +101,16 @@ public class ChessGameDao {
             throw new RuntimeException("체스 게임 수정 실패");
         }
     }
+
+    public void deleteChessGame(Long id) {
+        String query = "DELETE FROM chessgame WHERE id = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, id);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("체스 게임 삭제 실패");
+        }
+    }
 }

@@ -79,11 +79,11 @@ public class Board {
         return pieces.get(position);
     }
 
-    public Board setId(Long gameId) {
-        return new Board(pieces, gameId, turn);
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public Board setId(Long gameId) {
+        return new Board(pieces, gameId, turn);
     }
 }

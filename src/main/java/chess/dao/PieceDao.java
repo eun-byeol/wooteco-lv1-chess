@@ -82,6 +82,7 @@ public class PieceDao {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<PieceDto> pieceDtos = new ArrayList<>();
             while (resultSet.next()) {
+                System.out.println(resultSet);
                 pieceDtos.add(
                     new PieceDto(
                         resultSet.getLong("id"),
@@ -111,6 +112,18 @@ public class PieceDao {
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("기물 수정 실패");
+        }
+    }
+
+    public void deletePieceByChessGameId(Long chessGameId) {
+        String query = "DELETE FROM piece WHERE chessGameId = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, chessGameId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("기물 삭제 실패");
         }
     }
 }
