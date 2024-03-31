@@ -66,7 +66,6 @@ public final class ChessGame {
 
     private GameStatus executeCommand(Board board, GameStatus gameStatus) {
         List<String> commands = inputView.askGameCommands();
-
         return gameStatus.action(commands, board);
     }
 
@@ -81,6 +80,10 @@ public final class ChessGame {
         boolean isKingCaught = board.move(source, target);
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
+        return handleKingCaught(isKingCaught, board);
+    }
+
+    private boolean handleKingCaught(boolean isKingCaught, Board board) {
         if (isKingCaught) {
             Color color = board.lastTurn();
             WinnerDto result = WinnerDto.from(color);

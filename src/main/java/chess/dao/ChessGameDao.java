@@ -12,6 +12,8 @@ import java.util.Optional;
 
 public class ChessGameDao {
 
+    private static final Long AUTO_INCREMENT_DEFAULT = 0L;
+
     private final DataBaseConnector connector;
 
     public ChessGameDao(DataBaseConnector connector) {
@@ -22,7 +24,7 @@ public class ChessGameDao {
         String query = "INSERT INTO chessgame VALUES(?, ?, ?)";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, 0L);
+            preparedStatement.setLong(1, AUTO_INCREMENT_DEFAULT);
             preparedStatement.setString(2, chessGameDto.turn());
             preparedStatement.setString(3, chessGameDto.pieces());
             preparedStatement.executeUpdate();
@@ -38,14 +40,18 @@ public class ChessGameDao {
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getLong("lastId");
-            }
+            return getLastIdFrom(resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임 마지막 id 조회 실패");
         }
-        return 0L;
+    }
+
+    private long getLastIdFrom(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            return resultSet.getLong("lastId");
+        }
+        return AUTO_INCREMENT_DEFAULT;
     }
 
     public Optional<ChessGameDto> findById(Long id) {
@@ -54,20 +60,26 @@ public class ChessGameDao {
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return Optional.of(
-                    new ChessGameDto(
-                        resultSet.getLong("id"),
-                        resultSet.getString("turn"),
-                        resultSet.getString("pieces")
-                    )
-                );
-            }
-            return Optional.empty();
+            return getChessGameDtoFrom(resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임 조회 실패");
         }
+    }
+
+    private Optional<ChessGameDto> getChessGameDtoFrom(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            return Optional.of(createChessGameDto(resultSet));
+        }
+        return Optional.empty();
+    }
+
+    private ChessGameDto createChessGameDto(ResultSet resultSet) throws SQLException {
+        return new ChessGameDto(
+            resultSet.getLong("id"),
+            resultSet.getString("turn"),
+            resultSet.getString("pieces")
+        );
     }
 
     public List<ChessGameDto> findAll() {
@@ -75,21 +87,19 @@ public class ChessGameDao {
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-            List<ChessGameDto> chessGameDtos = new ArrayList<>();
-            while (resultSet.next()) {
-                chessGameDtos.add(
-                    new ChessGameDto(
-                        resultSet.getLong("id"),
-                        resultSet.getString("turn"),
-                        resultSet.getString("pieces")
-                    )
-                );
-            }
-            return chessGameDtos;
+            return getAllChessGameDtoFrom(resultSet);
         } catch (SQLException e) {
             System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임 전체 조회 실패");
         }
+    }
+
+    private List<ChessGameDto> getAllChessGameDtoFrom(ResultSet resultSet) throws SQLException {
+        List<ChessGameDto> chessGameDtos = new ArrayList<>();
+        while (resultSet.next()) {
+            chessGameDtos.add(createChessGameDto(resultSet));
+        }
+        return chessGameDtos;
     }
 
     public void update(ChessGameDto chessGameDto) {
