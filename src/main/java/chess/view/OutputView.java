@@ -10,8 +10,8 @@ public final class OutputView {
 
     private static final String NEWLINE = System.lineSeparator();
 
-    private static final String CHESS_GAME_INTRO = "> 체스 게임을 시작합니다." + NEWLINE;
-    private static final String CONTINUE_GAME_INTRO = "## 진행 중인 게임을 불러왔습니다." + NEWLINE;
+    private static final String CHESS_GAME_INTRO = "> 체스 게임을 시작합니다.";
+    private static final String CONTINUE_GAME_INTRO = NEWLINE + "## 진행 중인 게임을 불러왔습니다." + NEWLINE;
     private static final CharSequence RANK_DELIMITER = "";
     private static final String SCORE_STATUS_INTRO = NEWLINE + "## 점수 집계";
     private static final String SCORE_FORMAT = "%s : %.1f점" + NEWLINE;
