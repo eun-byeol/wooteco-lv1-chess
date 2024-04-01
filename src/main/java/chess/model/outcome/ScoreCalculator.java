@@ -3,7 +3,6 @@ package chess.model.outcome;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
-import chess.dto.ColorScoreDto;
 import chess.model.material.Color;
 import chess.model.piece.Piece;
 import chess.model.position.Column;
@@ -21,13 +20,13 @@ public final class ScoreCalculator {
         this.pieces = pieces;
     }
 
-    public ColorScoreDto calculate(Color color) {
+    public ColorScore calculate(Color color) {
         double total = 0;
         for (Column column : Column.values()) {
             Map<Piece, Integer> counts = countPiece(column, color);
             total += scores(counts);
         }
-        return ColorScoreDto.of(color, total);
+        return new ColorScore(color, total);
     }
 
     private Map<Piece, Integer> countPiece(Column column, Color color) {

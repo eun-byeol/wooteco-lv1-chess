@@ -10,6 +10,7 @@ import chess.model.board.Board;
 import chess.model.board.InitialBoardFactory;
 import chess.model.game.GameStatus;
 import chess.model.material.Color;
+import chess.model.outcome.ColorScore;
 import chess.model.outcome.ScoreCalculator;
 import chess.model.position.Position;
 import chess.service.ChessService;
@@ -91,16 +92,15 @@ public final class ChessGame {
 
     private void executeStatus(Board board) {
         ScoreCalculator scoreCalculator = board.calculateScore();
-        ColorScoreDto whiteScore = scoreCalculator.calculate(WHITE);
-        ColorScoreDto blackScore = scoreCalculator.calculate(BLACK);
-        outputView.printScoreStatus(whiteScore, blackScore);
+        ColorScore whiteScore = scoreCalculator.calculate(WHITE);
+        ColorScore blackScore = scoreCalculator.calculate(BLACK);
+        ColorScoreDto whiteScoreDto = ColorScoreDto.from(whiteScore);
+        ColorScoreDto blackScoreDto = ColorScoreDto.from(blackScore);
+        outputView.printScoreStatus(whiteScoreDto, blackScoreDto);
     }
 
     private void executeEnd(Board board) {
-        ScoreCalculator scoreCalculator = board.calculateScore();
-        ColorScoreDto whiteScore = scoreCalculator.calculate(WHITE);
-        ColorScoreDto blackScore = scoreCalculator.calculate(BLACK);
-        outputView.printScoreStatus(whiteScore, blackScore);
+        executeStatus(board);
         chessService.updateGame(board);
         outputView.printSaveGame();
     }

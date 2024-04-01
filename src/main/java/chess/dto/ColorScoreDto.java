@@ -1,12 +1,12 @@
 package chess.dto;
 
 import chess.dto.mapper.ColorMapper;
-import chess.model.material.Color;
+import chess.model.outcome.ColorScore;
 
 public record ColorScoreDto(String color, double score) {
 
-    public static ColorScoreDto of(Color color, double score) {
-        String colorName = ColorMapper.serialize(color);
-        return new ColorScoreDto(colorName, score);
+    public static ColorScoreDto from(ColorScore colorScore) {
+        String colorName = ColorMapper.serialize(colorScore.getColor());
+        return new ColorScoreDto(colorName, colorScore.getScore());
     }
 }

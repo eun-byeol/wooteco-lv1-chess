@@ -1,21 +1,26 @@
 package chess.model.outcome;
 
-import chess.dto.ColorScoreDto;
-import chess.dto.WinnerDto;
 import chess.model.material.Color;
 
 public final class Winner {
 
-    private Winner() {
+    private final ColorScore colorScore;
+
+    public Winner(ColorScore firstScore, ColorScore secondScore) {
+        colorScore = determine(firstScore, secondScore);
     }
 
-    public static WinnerDto of(ColorScoreDto firstColor, ColorScoreDto secondColor) {
-        if (firstColor.score() > secondColor.score()) {
-            return new WinnerDto(firstColor.color());
+    public ColorScore determine(ColorScore firstScore, ColorScore secondScore) {
+        if (firstScore.isHigherThan(secondScore)) {
+            return firstScore;
         }
-        if (firstColor.score() < secondColor.score()) {
-            return new WinnerDto(secondColor.color());
+        if (secondScore.isHigherThan(firstScore)) {
+            return secondScore;
         }
-        return WinnerDto.from(Color.NONE);
+        return ColorScore.empty();
+    }
+
+    public Color getColor() {
+        return colorScore.getColor();
     }
 }

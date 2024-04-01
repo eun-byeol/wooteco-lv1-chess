@@ -1,6 +1,7 @@
 package chess.model.outcome;
 
 import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.NONE;
 import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,20 +16,20 @@ class WinnerTest {
     @DisplayName("점수가 높은 진영이 승리한다")
     @Test
     void selectWinner() {
-        ColorScoreDto white = ColorScoreDto.of(WHITE, 19.5);
-        ColorScoreDto black = ColorScoreDto.of(BLACK, 19);
+        ColorScore white = new ColorScore(WHITE, 19.5);
+        ColorScore black = new ColorScore(BLACK, 19);
 
-        WinnerDto winnerDto = Winner.of(white, black);
-        assertThat(winnerDto.winner()).isEqualTo(ColorMapper.WHITE.getDisplayName());
+        Winner Winner = new Winner(white, black);
+        assertThat(Winner.getColor()).isEqualTo(WHITE);
     }
 
     @DisplayName("점수가 동일하면 무승부이다")
     @Test
     void checkDrawWithSameScores() {
-        ColorScoreDto white = ColorScoreDto.of(WHITE, 19.5);
-        ColorScoreDto black = ColorScoreDto.of(BLACK, 19.5);
+        ColorScore white = new ColorScore(WHITE, 19.5);
+        ColorScore black = new ColorScore(BLACK, 19.5);
 
-        WinnerDto winnerDto = Winner.of(white, black);
-        assertThat(winnerDto.isDraw()).isTrue();
+        Winner winner = new Winner(white, black);
+        assertThat(winner.getColor()).isEqualTo(NONE);
     }
 }

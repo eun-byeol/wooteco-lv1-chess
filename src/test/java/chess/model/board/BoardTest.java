@@ -208,8 +208,8 @@ class BoardTest {
 
         ScoreCalculator scoreCalculator = board.calculateScore();
         assertAll(
-            () -> assertThat(scoreCalculator.calculate(WHITE).score()).isEqualTo(19.5),
-            () -> assertThat(scoreCalculator.calculate(BLACK).score()).isEqualTo(20)
+            () -> assertThat(scoreCalculator.calculate(WHITE).getScore()).isEqualTo(19.5),
+            () -> assertThat(scoreCalculator.calculate(BLACK).getScore()).isEqualTo(20)
         );
     }
 

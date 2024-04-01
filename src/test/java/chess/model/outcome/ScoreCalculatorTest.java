@@ -31,7 +31,7 @@ class ScoreCalculatorTest {
             "....rk.."
         );
         ScoreCalculator scoreCalculator = generate(snapShot);
-        assertThat(scoreCalculator.calculate(WHITE).score()).isEqualTo(19.5);
+        assertThat(scoreCalculator.calculate(WHITE).getScore()).isEqualTo(19.5);
     }
 
     private ScoreCalculator generate(List<String> snapShot) {
@@ -63,6 +63,6 @@ class ScoreCalculatorTest {
             "....rk.."
         );
         ScoreCalculator scoreCalculator = generate(snapShot);
-        assertThat(scoreCalculator.calculate(BLACK).score()).isEqualTo(20);
+        assertThat(scoreCalculator.calculate(BLACK).getScore()).isEqualTo(20);
     }
 }
