@@ -89,6 +89,15 @@ public class MovementDaoImpl implements MovementDao {
     }
 
     @Override
-    public void delete(Long id) {
+    public void deleteAllByGameId(Long gameId) {
+        String query = "DELETE FROM movement WHERE gameId = ?";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, gameId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("움직임 삭제 실패");
+        }
     }
 }

@@ -73,5 +73,6 @@ public class ChessServiceImpl implements ChessService {
     @Override
     public void deleteGame(Long id) {
         chessGameDao.delete(id);
+        movementDao.deleteAllByGameId(id);
     }
 }

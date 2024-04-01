@@ -12,5 +12,5 @@ public interface MovementDao {
 
     List<MovementDto> findAllSortedByTime();
 
-    void delete(Long id);
+    void deleteAllByGameId(Long gameId);
 }
