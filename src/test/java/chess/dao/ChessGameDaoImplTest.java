@@ -34,11 +34,7 @@ class ChessGameDaoImplTest {
     @DisplayName("체스 게임 저장 성공")
     @Test
     void addChessGame() {
-        ChessGameDto chessGameDto = new ChessGameDto(
-            0L,
-            Color.WHITE.name(),
-            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
-        );
+        ChessGameDto chessGameDto = new ChessGameDto(0L, Color.WHITE.name());
         Long id = chessGameDao.add(chessGameDto);
         assertThat(chessGameDao.findById(id)).isPresent();
     }
@@ -46,16 +42,8 @@ class ChessGameDaoImplTest {
     @DisplayName("체스 게임 전체 조회 성공")
     @Test
     void findAllChessGame() {
-        ChessGameDto firstGame = new ChessGameDto(
-            0L,
-            Color.WHITE.name(),
-            "......../......../K...P.../......../......../......../......../K...P..."
-        );
-        ChessGameDto secondGame = new ChessGameDto(
-            0L,
-            Color.BLACK.name(),
-            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
-        );
+        ChessGameDto firstGame = new ChessGameDto(0L, Color.WHITE.name());
+        ChessGameDto secondGame = new ChessGameDto(0L, Color.BLACK.name());
         Long firstGameId = chessGameDao.add(firstGame);
         Long secondGameId = chessGameDao.add(secondGame);
 
@@ -69,18 +57,10 @@ class ChessGameDaoImplTest {
     @DisplayName("체스 게임 수정 성공")
     @Test
     void updateChessGame() {
-        ChessGameDto before = new ChessGameDto(
-            0L,
-            Color.WHITE.name(),
-            "......../......../K...P.../......../......../......../......../K...P..."
-        );
+        ChessGameDto before = new ChessGameDto(0L, Color.WHITE.name());
         Long id = chessGameDao.add(before);
 
-        ChessGameDto after = new ChessGameDto(
-            id,
-            Color.BLACK.name(),
-            "......../K...P.../K...P.../K...P.../K...P.../K...P.../K...P.../K...P..."
-        );
+        ChessGameDto after = new ChessGameDto(id, Color.BLACK.name());
 
         chessGameDao.update(after);
 

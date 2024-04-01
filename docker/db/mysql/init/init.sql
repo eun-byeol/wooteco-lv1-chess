@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS `chessgame`
 (
     `id`   BIGINT     NOT NULL AUTO_INCREMENT,
     `turn` VARCHAR(8) NOT NULL,
-    `pieces` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -28,7 +27,6 @@ CREATE TABLE IF NOT EXISTS `chessgame`
 (
     `id`   BIGINT     NOT NULL AUTO_INCREMENT,
     `turn` VARCHAR(8) NOT NULL,
-    `pieces` VARCHAR(100) NOT NULL,
     PRIMARY KEY (`id`)
 );
 

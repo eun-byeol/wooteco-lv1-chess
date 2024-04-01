@@ -5,9 +5,6 @@ import static chess.model.material.Color.NONE;
 import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import chess.dto.ColorScoreDto;
-import chess.dto.WinnerDto;
-import chess.dto.mapper.ColorMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

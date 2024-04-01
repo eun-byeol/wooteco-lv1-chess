@@ -11,7 +11,6 @@ import chess.dao.MovementDao;
 import chess.dao.MovementDaoImpl;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
-import chess.dto.MovementDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
@@ -72,7 +71,6 @@ class ChessServiceImplTest {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board savedBoard = chessService.saveGame(boardFactory.generate());
         ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
-        MovementDto movementDto = MovementDto.from(savedBoard);
 
         assertThat(chessGameDao.findById(chessGameDto.id())).isPresent();
     }

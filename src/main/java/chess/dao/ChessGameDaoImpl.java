@@ -22,12 +22,11 @@ public class ChessGameDaoImpl implements ChessGameDao {
 
     @Override
     public Long add(ChessGameDto chessGameDto) {
-        String query = "INSERT INTO chessgame VALUES(?, ?, ?)";
+        String query = "INSERT INTO chessgame VALUES(?, ?)";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setLong(1, AUTO_INCREMENT_DEFAULT);
             preparedStatement.setString(2, chessGameDto.turn());
-            preparedStatement.setString(3, chessGameDto.pieces());
             preparedStatement.executeUpdate();
             return findLastId();
         } catch (SQLException e) {
@@ -79,8 +78,7 @@ public class ChessGameDaoImpl implements ChessGameDao {
     private ChessGameDto createChessGameDto(ResultSet resultSet) throws SQLException {
         return new ChessGameDto(
             resultSet.getLong("id"),
-            resultSet.getString("turn"),
-            resultSet.getString("pieces")
+            resultSet.getString("turn")
         );
     }
 
@@ -107,12 +105,11 @@ public class ChessGameDaoImpl implements ChessGameDao {
 
     @Override
     public void update(ChessGameDto chessGameDto) {
-        String query = "UPDATE chessgame SET turn = ?, pieces = ? WHERE id = ?";
+        String query = "UPDATE chessgame SET turn = ? WHERE id = ?";
         try (Connection connection = connector.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, chessGameDto.turn());
-            preparedStatement.setString(2, chessGameDto.pieces());
-            preparedStatement.setLong(3, chessGameDto.id());
+            preparedStatement.setLong(2, chessGameDto.id());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             System.err.println(e.getMessage());
