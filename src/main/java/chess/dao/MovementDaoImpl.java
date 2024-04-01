@@ -56,7 +56,31 @@ public class MovementDaoImpl implements MovementDao {
 
     @Override
     public Optional<MovementDto> findLatestByGameId(Long gameId) {
+        String query = "select * from movement WHERE gameId = ? ORDER BY id DESC LIMIT 1";
+        try (Connection connection = connector.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setLong(1, gameId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            return getMovementDtoFrom(resultSet);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
+            throw new RuntimeException("가장 최근 움직임 조회 실패");
+        }
+    }
+
+    private Optional<MovementDto> getMovementDtoFrom(ResultSet resultSet) throws SQLException {
+        if (resultSet.next()) {
+            return Optional.of(createMovementDto(resultSet));
+        }
         return Optional.empty();
+    }
+
+    private MovementDto createMovementDto(ResultSet resultSet) throws SQLException {
+        return new MovementDto(
+            resultSet.getLong("id"),
+            resultSet.getString("pieces"),
+            resultSet.getLong("gameId")
+        );
     }
 
     @Override

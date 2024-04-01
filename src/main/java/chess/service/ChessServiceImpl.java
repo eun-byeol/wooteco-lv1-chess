@@ -28,8 +28,11 @@ public class ChessServiceImpl implements ChessService {
     @Override
     public Board loadGame() {
         ChessGameDto chessGameDto = findFirstChessGameDto();
-        List<String> pieces = chessGameDto.unJoinPieces();
+        MovementDto movementDto = findLatestMovementDto(chessGameDto.id());
+
+        List<String> pieces = movementDto.unJoinPieces();
         Color turn = Color.valueOf(chessGameDto.turn());
+
         CustomBoardFactory customBoardFactory = new CustomBoardFactory(
             pieces,
             chessGameDto.id(),
@@ -43,6 +46,11 @@ public class ChessServiceImpl implements ChessService {
             .stream()
             .findFirst()
             .orElseThrow(() -> new UnsupportedOperationException("저장된 게임이 없습니다."));
+    }
+
+    private MovementDto findLatestMovementDto(Long gameId) {
+        return movementDao.findLatestByGameId(gameId)
+            .orElseThrow(() -> new UnsupportedOperationException("저장된 움직임이 없습니다."));
     }
 
     @Override
