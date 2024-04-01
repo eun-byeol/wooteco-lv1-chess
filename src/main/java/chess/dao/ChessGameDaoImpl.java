@@ -3,14 +3,12 @@ package chess.dao;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ChessGameDaoImpl implements ChessGameDao {
+public class ChessGameDaoImpl extends DaoTemplate implements ChessGameDao {
 
     private static final Long AUTO_INCREMENT_DEFAULT = 0L;
 
@@ -21,112 +19,69 @@ public class ChessGameDaoImpl implements ChessGameDao {
     }
 
     @Override
+    protected Connection getConnection() {
+        return connector.getConnection();
+    }
+
+    @Override
     public Long add(ChessGameDto chessGameDto) {
         String query = "INSERT INTO chessgame VALUES(?, ?)";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, AUTO_INCREMENT_DEFAULT);
-            preparedStatement.setString(2, chessGameDto.turn());
-            preparedStatement.executeUpdate();
-            return findLastId();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("체스 게임 저장 실패");
-        }
+        String errorMessage = "체스 게임 저장 실패";
+        executeUpdate(query, errorMessage, AUTO_INCREMENT_DEFAULT, chessGameDto.turn());
+        return findLastId();
     }
 
     private Long findLastId() {
         String query = "SELECT MAX(id) lastId FROM chessgame";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return getLastIdFrom(resultSet);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("체스 게임 마지막 id 조회 실패");
-        }
+        String errorMessage = "체스 게임 마지막 id 조회 실패";
+        return executeQueryForSingleData(query, errorMessage, this::getLastId)
+            .orElse(AUTO_INCREMENT_DEFAULT);
     }
 
-    private long getLastIdFrom(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
+    private Long getLastId(ResultSet resultSet) {
+        try {
             return resultSet.getLong("lastId");
+        } catch (SQLException e) {
+            throw new RuntimeException("체스 게임 마지막 id 조회 실패");
         }
-        return AUTO_INCREMENT_DEFAULT;
     }
 
     @Override
     public Optional<ChessGameDto> findById(Long id) {
         String query = "SELECT * FROM chessgame WHERE id = ?";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return getChessGameDtoFrom(resultSet);
+        String errorMessage = "체스 게임 조회 실패";
+        return executeQueryForSingleData(query, errorMessage, this::createChessGameDto, id);
+    }
+
+    private ChessGameDto createChessGameDto(ResultSet resultSet) {
+        try {
+            return new ChessGameDto(
+                resultSet.getLong("id"),
+                resultSet.getString("turn")
+            );
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
             throw new RuntimeException("체스 게임 조회 실패");
         }
-    }
-
-    private Optional<ChessGameDto> getChessGameDtoFrom(ResultSet resultSet) throws SQLException {
-        if (resultSet.next()) {
-            return Optional.of(createChessGameDto(resultSet));
-        }
-        return Optional.empty();
-    }
-
-    private ChessGameDto createChessGameDto(ResultSet resultSet) throws SQLException {
-        return new ChessGameDto(
-            resultSet.getLong("id"),
-            resultSet.getString("turn")
-        );
     }
 
     @Override
     public List<ChessGameDto> findAll() {
         String query = "SELECT * FROM chessgame";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-            return getAllChessGameDtoFrom(resultSet);
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("체스 게임 전체 조회 실패");
-        }
-    }
-
-    private List<ChessGameDto> getAllChessGameDtoFrom(ResultSet resultSet) throws SQLException {
-        List<ChessGameDto> chessGameDtos = new ArrayList<>();
-        while (resultSet.next()) {
-            chessGameDtos.add(createChessGameDto(resultSet));
-        }
-        return chessGameDtos;
+        String errorMessage = "체스 게임 전체 조회 실패";
+        return executeQueryForMultiData(query, errorMessage, this::createChessGameDto);
     }
 
     @Override
     public void update(ChessGameDto chessGameDto) {
         String query = "UPDATE chessgame SET turn = ? WHERE id = ?";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setString(1, chessGameDto.turn());
-            preparedStatement.setLong(2, chessGameDto.id());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("체스 게임 수정 실패");
-        }
+        String errorMessage = "체스 게임 수정 실패";
+        executeUpdate(query, errorMessage, chessGameDto.turn(), chessGameDto.id());
     }
 
     @Override
     public void delete(Long id) {
         String query = "DELETE FROM chessgame WHERE id = ?";
-        try (Connection connection = connector.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-            throw new RuntimeException("체스 게임 삭제 실패");
-        }
+        String errorMessage = "체스 게임 삭제 실패";
+        executeUpdate(query, errorMessage, id);
     }
 }
