@@ -7,8 +7,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import chess.TestConnector;
 import chess.dao.ChessGameDao;
 import chess.dao.ChessGameDaoImpl;
+import chess.dao.MovementDao;
+import chess.dao.MovementDaoImpl;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
+import chess.dto.MovementDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
@@ -26,7 +29,8 @@ class ChessServiceImplTest {
 
     private final DataBaseConnector connector = new TestConnector();
     private final ChessGameDao chessGameDao = new ChessGameDaoImpl(connector);
-    private final ChessService chessService = new ChessServiceImpl(chessGameDao);
+    private final MovementDao movementDao = new MovementDaoImpl(connector);
+    private final ChessService chessService = new ChessServiceImpl(chessGameDao, movementDao);
 
     @BeforeEach
     void initializeDataBase() {
@@ -68,6 +72,8 @@ class ChessServiceImplTest {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board savedBoard = chessService.saveGame(boardFactory.generate());
         ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
+        MovementDto movementDto = MovementDto.from(savedBoard);
+
         assertThat(chessGameDao.findById(chessGameDto.id())).isPresent();
     }
 

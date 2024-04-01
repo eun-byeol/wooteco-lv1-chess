@@ -1,7 +1,9 @@
 package chess.service;
 
 import chess.dao.ChessGameDao;
+import chess.dao.MovementDao;
 import chess.dto.ChessGameDto;
+import chess.dto.MovementDto;
 import chess.model.board.Board;
 import chess.model.board.CustomBoardFactory;
 import chess.model.material.Color;
@@ -10,9 +12,11 @@ import java.util.List;
 public class ChessServiceImpl implements ChessService {
 
     private final ChessGameDao chessGameDao;
+    private final MovementDao movementDao;
 
-    public ChessServiceImpl(ChessGameDao chessGameDao) {
+    public ChessServiceImpl(ChessGameDao chessGameDao, MovementDao movementDao) {
         this.chessGameDao = chessGameDao;
+        this.movementDao = movementDao;
     }
 
     @Override
@@ -45,7 +49,11 @@ public class ChessServiceImpl implements ChessService {
     public Board saveGame(Board board) {
         ChessGameDto chessGameDto = ChessGameDto.from(board);
         Long id = chessGameDao.add(chessGameDto);
-        return board.setId(id);
+        Board savedBoard = board.setId(id);
+
+        MovementDto movementDto = MovementDto.from(savedBoard);
+        movementDao.add(movementDto);
+        return savedBoard;
     }
 
     @Override

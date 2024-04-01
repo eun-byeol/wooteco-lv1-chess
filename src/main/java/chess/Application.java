@@ -1,7 +1,10 @@
 package chess;
 
 import chess.controller.ChessGame;
+import chess.dao.ChessGameDao;
 import chess.dao.ChessGameDaoImpl;
+import chess.dao.MovementDao;
+import chess.dao.MovementDaoImpl;
 import chess.db.DataBaseConnector;
 import chess.db.ProductionConnector;
 import chess.service.ChessServiceImpl;
@@ -15,8 +18,9 @@ public final class Application {
         OutputView outputView = new OutputView();
 
         DataBaseConnector dataBaseConnector = new ProductionConnector();
-        ChessGameDaoImpl chessGameDao = new ChessGameDaoImpl(dataBaseConnector);
-        ChessServiceImpl chessService = new ChessServiceImpl(chessGameDao);
+        ChessGameDao chessGameDao = new ChessGameDaoImpl(dataBaseConnector);
+        MovementDao movementDao = new MovementDaoImpl(dataBaseConnector);
+        ChessServiceImpl chessService = new ChessServiceImpl(chessGameDao, movementDao);
 
         ChessGame chessGame = new ChessGame(inputView, outputView, chessService);
         chessGame.run();

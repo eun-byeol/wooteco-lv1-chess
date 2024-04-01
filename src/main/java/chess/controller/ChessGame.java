@@ -13,7 +13,7 @@ import chess.model.material.Color;
 import chess.model.outcome.ColorScore;
 import chess.model.outcome.ScoreCalculator;
 import chess.model.position.Position;
-import chess.service.ChessServiceImpl;
+import chess.service.ChessService;
 import chess.view.InputView;
 import chess.view.OutputView;
 import java.util.List;
@@ -26,9 +26,9 @@ public final class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final ChessServiceImpl chessService;
+    private final ChessService chessService;
 
-    public ChessGame(InputView inputView, OutputView outputView, ChessServiceImpl chessService) {
+    public ChessGame(InputView inputView, OutputView outputView, ChessService chessService) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.chessService = chessService;

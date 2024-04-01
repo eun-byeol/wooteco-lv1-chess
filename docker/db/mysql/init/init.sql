@@ -8,9 +8,17 @@ USE `chess`;
 
 CREATE TABLE IF NOT EXISTS `chessgame`
 (
-    `id`     BIGINT      NOT NULL AUTO_INCREMENT,
-    `turn`   VARCHAR(8)  NOT NULL,
+    `id`   BIGINT     NOT NULL AUTO_INCREMENT,
+    `turn` VARCHAR(8) NOT NULL,
     `pieces` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `movement`
+(
+    `id`     BIGINT       NOT NULL AUTO_INCREMENT,
+    `pieces` VARCHAR(100) NOT NULL,
+    `gameId` BIGINT       NOT NULL,
     PRIMARY KEY (`id`)
 );
 
@@ -18,8 +26,16 @@ USE `chess_test`;
 
 CREATE TABLE IF NOT EXISTS `chessgame`
 (
-    `id`     BIGINT      NOT NULL AUTO_INCREMENT,
-    `turn`   VARCHAR(8)  NOT NULL,
+    `id`   BIGINT     NOT NULL AUTO_INCREMENT,
+    `turn` VARCHAR(8) NOT NULL,
     `pieces` VARCHAR(100) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `movement`
+(
+    `id`     BIGINT       NOT NULL AUTO_INCREMENT,
+    `pieces` VARCHAR(100) NOT NULL,
+    `gameId` BIGINT       NOT NULL,
     PRIMARY KEY (`id`)
 );
