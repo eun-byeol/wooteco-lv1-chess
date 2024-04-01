@@ -3,6 +3,7 @@ package chess.service;
 import static chess.model.Fixtures.A2;
 import static chess.model.Fixtures.A4;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.TestConnector;
 import chess.dao.ChessGameDao;
@@ -11,6 +12,7 @@ import chess.dao.MovementDao;
 import chess.dao.MovementDaoImpl;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
+import chess.dto.MovementDto;
 import chess.model.board.Board;
 import chess.model.board.BoardFactory;
 import chess.model.board.CustomBoardFactory;
@@ -20,6 +22,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,9 +73,12 @@ class ChessServiceImplTest {
     void saveGame() {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board savedBoard = chessService.saveGame(boardFactory.generate());
-        ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
+        Long gameId = savedBoard.getId();
 
-        assertThat(chessGameDao.findById(chessGameDto.id())).isPresent();
+        assertAll(
+            () -> assertThat(chessGameDao.findById(gameId)).isPresent(),
+            () -> assertThat(movementDao.findLatestByGameId(gameId)).isPresent()
+        );
     }
 
     @DisplayName("저장된 게임을 삭제한다")
@@ -80,11 +86,14 @@ class ChessServiceImplTest {
     void deleteGame() {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board savedBoard = chessService.saveGame(boardFactory.generate());
-        ChessGameDto chessGameDto = ChessGameDto.from(savedBoard);
+        Long gameId = savedBoard.getId();
 
-        chessService.deleteGame(chessGameDto.id());
+        chessService.deleteGame(gameId);
 
-        assertThat(chessGameDao.findById(chessGameDto.id())).isEmpty();
+        assertAll(
+            () -> assertThat(chessGameDao.findById(gameId)).isEmpty(),
+            () -> assertThat(movementDao.findLatestByGameId(gameId)).isEmpty()
+        );
     }
 
     @DisplayName("저장된 게임을 수정한다")
@@ -92,12 +101,20 @@ class ChessServiceImplTest {
     void updateGame() {
         BoardFactory boardFactory = new InitialBoardFactory();
         Board board = chessService.saveGame(boardFactory.generate());
+        Long gameId = board.getId();
 
         board.move(A2, A4);
         chessService.updateGame(board);
-        ChessGameDto expectedGameDto = ChessGameDto.from(board);
 
-        assertThat(chessGameDao.findById(board.getId()))
-            .contains(expectedGameDto);
+        ChessGameDto expectedGameDto = ChessGameDto.from(board);
+        MovementDto expectedMovementDto = MovementDto.from(board);
+
+        Optional<ChessGameDto> actualGameDto = chessGameDao.findById(gameId);
+        Optional<MovementDto> actualMovementDto = movementDao.findLatestByGameId(gameId);
+
+        assertAll(
+            () -> assertThat(actualGameDto).contains(expectedGameDto),
+            () -> assertThat(actualMovementDto).contains(expectedMovementDto)
+        );
     }
 }

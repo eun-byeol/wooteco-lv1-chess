@@ -57,7 +57,6 @@ public class MovementDaoImpl extends DaoTemplate implements MovementDao {
     private MovementDto createMovementDto(ResultSet resultSet) {
         try {
             return new MovementDto(
-                resultSet.getLong("id"),
                 resultSet.getString("pieces"),
                 resultSet.getLong("gameId")
             );

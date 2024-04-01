@@ -10,7 +10,7 @@ import chess.model.position.Row;
 import java.util.Arrays;
 import java.util.List;
 
-public record MovementDto(Long id, String pieces, Long gameId) {
+public record MovementDto(String pieces, Long gameId) {
 
     private static final String ROW_DELIMITER = "/";
 
@@ -18,7 +18,7 @@ public record MovementDto(Long id, String pieces, Long gameId) {
         String pieces = Arrays.stream(Row.values())
             .map(row -> joinPieces(row, board))
             .collect(joining(ROW_DELIMITER));
-        return new MovementDto(0L, pieces, board.getId());
+        return new MovementDto(pieces, board.getId());
     }
 
     private static String joinPieces(Row row, Board board) {
