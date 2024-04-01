@@ -14,10 +14,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ChessGameDaoTest {
+class ChessGameDaoImplTest {
 
     private final DataBaseConnector connector = new TestConnector();
-    private final ChessGameDao chessGameDao = new ChessGameDao(connector);
+    private final ChessGameDao chessGameDao = new ChessGameDaoImpl(connector);
 
     @BeforeEach
     void initializeDataBase() {

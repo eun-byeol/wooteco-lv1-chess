@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import chess.TestConnector;
 import chess.dao.ChessGameDao;
+import chess.dao.ChessGameDaoImpl;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
 import chess.model.board.Board;
@@ -21,11 +22,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class ChessServiceTest {
+class ChessServiceImplTest {
 
     private final DataBaseConnector connector = new TestConnector();
-    private final ChessGameDao chessGameDao = new ChessGameDao(connector);
-    private final ChessService chessService = new ChessService(chessGameDao);
+    private final ChessGameDao chessGameDao = new ChessGameDaoImpl(connector);
+    private final ChessService chessService = new ChessServiceImpl(chessGameDao);
 
     @BeforeEach
     void initializeDataBase() {
