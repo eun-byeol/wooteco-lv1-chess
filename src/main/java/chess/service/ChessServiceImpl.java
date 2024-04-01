@@ -67,7 +67,9 @@ public class ChessServiceImpl implements ChessService {
     @Override
     public void updateGame(Board board) {
         ChessGameDto chessGameDto = ChessGameDto.from(board);
+        MovementDto movementDto = MovementDto.from(board);
         chessGameDao.update(chessGameDto);
+        movementDao.add(movementDto);
     }
 
     @Override
