@@ -75,6 +75,7 @@ public final class ChessGame {
         Position source = Position.from(commands.get(SOURCE_INDEX));
         Position target = Position.from(commands.get(TARGET_INDEX));
         boolean isKingCaught = board.move(source, target);
+        chessService.updateGame(board);
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
         return handleKingCaught(isKingCaught, board);
