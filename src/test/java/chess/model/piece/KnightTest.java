@@ -30,7 +30,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class KnightTest {
 
-
     /*
     ........
     ........
