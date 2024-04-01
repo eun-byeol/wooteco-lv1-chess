@@ -22,7 +22,7 @@ public abstract class DaoTemplate {
         }
     }
 
-    protected abstract Connection getConnection() throws SQLException;
+    protected abstract Connection getConnection();
 
     private void setParameters(PreparedStatement preparedStatement, Object... parameters)
         throws SQLException {
