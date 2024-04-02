@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public abstract class DaoTemplate {
 
@@ -34,7 +33,7 @@ public abstract class DaoTemplate {
     public <T> Optional<T> executeQueryForSingleData(
         String query,
         String errorMessage,
-        Function<ResultSet, T> extractData,
+        ResultSetMapper<T> extractData,
         Object... parameters
     ) {
         try (Connection connection = getConnection();
@@ -48,10 +47,10 @@ public abstract class DaoTemplate {
         }
     }
 
-    private <T> Optional<T> extractSingle(ResultSet resultSet, Function<ResultSet, T> extractData)
+    private <T> Optional<T> extractSingle(ResultSet resultSet, ResultSetMapper<T> extractData)
         throws SQLException {
         if (resultSet.next()) {
-            return Optional.of(extractData.apply(resultSet));
+            return Optional.of(extractData.map(resultSet));
         }
         return Optional.empty();
     }
@@ -59,7 +58,7 @@ public abstract class DaoTemplate {
     public <T> List<T> executeQueryForMultiData(
         String query,
         String errorMessage,
-        Function<ResultSet, T> extractData,
+        ResultSetMapper<T> extractData,
         Object... parameters
     ) {
         try (Connection connection = getConnection();
@@ -73,11 +72,11 @@ public abstract class DaoTemplate {
         }
     }
 
-    private <T> List<T> extractMultitude(ResultSet resultSet, Function<ResultSet, T> extractData)
+    private <T> List<T> extractMultitude(ResultSet resultSet, ResultSetMapper<T> extractData)
         throws SQLException {
         List<T> data = new ArrayList<>();
         while (resultSet.next()) {
-            data.add(extractData.apply(resultSet));
+            data.add(extractData.map(resultSet));
         }
         return data;
     }

@@ -3,8 +3,6 @@ package chess.dao;
 import chess.db.DataBaseConnector;
 import chess.dto.ChessGameDto;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,41 +33,40 @@ public class ChessGameDaoImpl extends DaoTemplate implements ChessGameDao {
     private Long findLastId() {
         String query = "SELECT MAX(id) lastId FROM " + TABLE_NAME;
         String errorMessage = "체스 게임 마지막 id 조회 실패";
-        return executeQueryForSingleData(query, errorMessage, this::getLastId)
-            .orElse(AUTO_INCREMENT_DEFAULT);
-    }
-
-    private Long getLastId(ResultSet resultSet) {
-        try {
-            return resultSet.getLong("lastId");
-        } catch (SQLException e) {
-            throw new RuntimeException("체스 게임 마지막 id 조회 실패");
-        }
+        return executeQueryForSingleData(
+            query,
+            errorMessage,
+            resultSet -> resultSet.getLong("lastId")
+        ).orElse(AUTO_INCREMENT_DEFAULT);
     }
 
     @Override
     public Optional<ChessGameDto> findById(Long id) {
         String query = "SELECT * FROM " + TABLE_NAME + " WHERE id = ?";
         String errorMessage = "체스 게임 조회 실패";
-        return executeQueryForSingleData(query, errorMessage, this::createChessGameDto, id);
-    }
-
-    private ChessGameDto createChessGameDto(ResultSet resultSet) {
-        try {
-            return new ChessGameDto(
+        return executeQueryForSingleData(
+            query,
+            errorMessage,
+            resultSet -> new ChessGameDto(
                 resultSet.getLong("id"),
                 resultSet.getString("turn")
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException("체스 게임 조회 실패");
-        }
+            ),
+            id
+        );
     }
 
     @Override
     public List<ChessGameDto> findAll() {
         String query = "SELECT * FROM " + TABLE_NAME;
         String errorMessage = "체스 게임 전체 조회 실패";
-        return executeQueryForMultiData(query, errorMessage, this::createChessGameDto);
+        return executeQueryForMultiData(
+            query,
+            errorMessage,
+            resultSet -> new ChessGameDto(
+                resultSet.getLong("id"),
+                resultSet.getString("turn")
+            )
+        );
     }
 
     @Override

@@ -3,8 +3,6 @@ package chess.dao;
 import chess.db.DataBaseConnector;
 import chess.dto.MovementDto;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class MovementDaoImpl extends DaoTemplate implements MovementDao {
@@ -35,34 +33,26 @@ public class MovementDaoImpl extends DaoTemplate implements MovementDao {
     private Long findLastId() {
         String query = "SELECT MAX(id) lastId FROM " + TABLE_NAME;
         String errorMessage = "움직임 마지막 id 조회 실패";
-        return executeQueryForSingleData(query, errorMessage, this::getLastId)
-            .orElse(AUTO_INCREMENT_DEFAULT);
-    }
-
-    private Long getLastId(ResultSet resultSet) {
-        try {
-            return resultSet.getLong("lastId");
-        } catch (SQLException e) {
-            throw new RuntimeException("움직임 마지막 id 조회 실패");
-        }
+        return executeQueryForSingleData(
+            query,
+            errorMessage,
+            resultSet -> resultSet.getLong("lastId")
+        ).orElse(AUTO_INCREMENT_DEFAULT);
     }
 
     @Override
     public Optional<MovementDto> findLatestByGameId(Long gameId) {
         String query = "select * from " + TABLE_NAME + " WHERE gameId = ? ORDER BY id DESC LIMIT 1";
         String errorMessage = "가장 최근 움직임 조회 실패";
-        return executeQueryForSingleData(query, errorMessage, this::createMovementDto, gameId);
-    }
-
-    private MovementDto createMovementDto(ResultSet resultSet) {
-        try {
-            return new MovementDto(
+        return executeQueryForSingleData(
+            query,
+            errorMessage,
+            resultSet -> new MovementDto(
                 resultSet.getString("pieces"),
                 resultSet.getLong("gameId")
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException("가장 최근 움직임 조회 실패");
-        }
+            ),
+            gameId
+        );
     }
 
     @Override
