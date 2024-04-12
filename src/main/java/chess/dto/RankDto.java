@@ -1,5 +1,6 @@
 package chess.dto;
 
+import chess.dto.mapper.PieceMapper;
 import chess.model.board.Board;
 import chess.model.piece.Piece;
 import chess.model.position.Column;
@@ -8,15 +9,9 @@ import chess.model.position.Row;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RankDto {
+public record RankDto(List<String> rank) {
 
     private static final int MAX_INDEX = 7;
-
-    private final List<String> rank;
-
-    public RankDto(List<String> rank) {
-        this.rank = rank;
-    }
 
     public static RankDto of(Board board, Row row) {
         List<String> rank = new ArrayList<>();
@@ -27,9 +22,5 @@ public class RankDto {
             rank.add(PieceMapper.serialize(piece));
         }
         return new RankDto(rank);
-    }
-
-    public List<String> getRank() {
-        return rank;
     }
 }

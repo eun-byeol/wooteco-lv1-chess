@@ -27,6 +27,7 @@ public class Knight extends Piece {
         UP_UP_LEFT, UP_UP_RIGHT, DOWN_DOWN_LEFT, DOWN_DOWN_RIGHT,
         LEFT_LEFT_UP, LEFT_LEFT_DOWN, RIGHT_RIGHT_UP, RIGHT_RIGHT_DOWN
     );
+    private static final double POINT = 2.5;
 
     private Knight(Color color) {
         super(color);
@@ -51,7 +52,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean isKnight() {
-        return true;
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

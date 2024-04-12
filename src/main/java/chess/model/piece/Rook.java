@@ -20,6 +20,7 @@ public class Rook extends Piece {
         .stream()
         .collect(toMap(identity(), Rook::new));
     private static final List<Movement> MOVEMENTS = List.of(UP, DOWN, LEFT, RIGHT);
+    private static final double POINT = 5;
 
     private Rook(Color color) {
         super(color);
@@ -44,7 +45,7 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean isRook() {
-        return true;
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

@@ -27,6 +27,7 @@ public class Queen extends Piece {
         UP, DOWN, LEFT, RIGHT,
         UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT
     );
+    private static final double POINT = 9;
 
     private Queen(Color color) {
         super(color);
@@ -51,7 +52,7 @@ public class Queen extends Piece {
     }
 
     @Override
-    public boolean isQueen() {
-        return true;
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

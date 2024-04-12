@@ -27,6 +27,7 @@ public class King extends Piece {
         UP, DOWN, LEFT, RIGHT,
         UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT
     );
+    private static final double POINT = 0;
 
     private King(Color color) {
         super(color);
@@ -48,6 +49,11 @@ public class King extends Piece {
             return;
         }
         throw new IllegalArgumentException("King은 상하좌우 대각선 1칸 이동만 가능합니다.");
+    }
+
+    @Override
+    public double totalPoint(int count) {
+        return POINT;
     }
 
     @Override

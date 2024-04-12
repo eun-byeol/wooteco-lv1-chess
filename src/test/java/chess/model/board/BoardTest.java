@@ -1,5 +1,7 @@
 package chess.model.board;
 
+import static chess.model.Fixtures.A2;
+import static chess.model.Fixtures.A4;
 import static chess.model.Fixtures.B1;
 import static chess.model.Fixtures.B2;
 import static chess.model.Fixtures.B4;
@@ -11,15 +13,17 @@ import static chess.model.Fixtures.C2;
 import static chess.model.Fixtures.C3;
 import static chess.model.Fixtures.C4;
 import static chess.model.Fixtures.C5;
+import static chess.model.Fixtures.D4;
 import static chess.model.Fixtures.E3;
 import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.WHITE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import chess.dto.BoardDto;
-import chess.model.CustomBoardFactory;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.Piece;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +56,7 @@ class BoardTest {
     private List<String> combineRanks(BoardDto boardDto) {
         return boardDto.getRanks()
             .stream()
-            .map(rankDto -> String.join("", rankDto.getRank()))
+            .map(rankDto -> String.join("", rankDto.rank()))
             .toList();
     }
 
@@ -69,7 +73,7 @@ class BoardTest {
             ".p.q....",
             "....k..."
         );
-        BoardFactory boardFactory = new CustomBoardFactory(snapShot, BLACK);
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, BLACK);
         Board board = boardFactory.generate();
         BoardDto boardDto = BoardDto.from(board);
         List<String> actual = combineRanks(boardDto);
@@ -146,5 +150,75 @@ class BoardTest {
             () -> assertThat(targetPiece).isEqualTo(sourcePiece),
             () -> assertThat(emptyPiece.isNone()).isTrue()
         );
+    }
+
+    @DisplayName("이동 시 King이 잡히면 true를 반환한다")
+    @Test
+    void catchKing() {
+        List<String> snapShot = List.of(
+            "........",
+            "........",
+            "........",
+            "..K.....",
+            "...q....",
+            "........",
+            "........",
+            ".......k"
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
+        Board board = boardFactory.generate();
+
+        assertThat(board.move(D4, C5)).isTrue();
+    }
+
+    @DisplayName("이동 시 King이 잡히지 않으면 false를 반환한다")
+    @Test
+    void catchChessman() {
+        List<String> snapShot = List.of(
+            "..K.....",
+            "........",
+            "........",
+            "..P.....",
+            "...q....",
+            "........",
+            "........",
+            ".......k"
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
+        Board board = boardFactory.generate();
+
+        assertThat(board.move(D4, C5)).isFalse();
+    }
+
+    @DisplayName("진영 별 총 점수를 구한다")
+    @Test
+    void calculateTotalScoreByColor() {
+        List<String> snapShot = List.of(
+            ".KR.....",
+            "P.PB....",
+            ".P..Q...",
+            "........",
+            ".....nq.",
+            ".....p.p",
+            ".....pp.",
+            "....rk.."
+        );
+        BoardFactory boardFactory = new CustomBoardFactory(snapShot, 0L, WHITE);
+        Board board = boardFactory.generate();
+
+        ScoreCalculator scoreCalculator = board.calculateScore();
+        assertAll(
+            () -> assertThat(scoreCalculator.calculate(WHITE).getScore()).isEqualTo(19.5),
+            () -> assertThat(scoreCalculator.calculate(BLACK).getScore()).isEqualTo(20)
+        );
+    }
+
+    @DisplayName("마지막으로 움직인 진영을 찾는다")
+    @Test
+    void findLastTurn() {
+        BoardFactory boardFactory = new InitialBoardFactory();
+        Board board = boardFactory.generate();
+        board.move(A2, A4);
+        assertThat(board.lastTurn()).isEqualTo(WHITE);
     }
 }

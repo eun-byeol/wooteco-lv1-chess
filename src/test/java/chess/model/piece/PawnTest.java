@@ -18,6 +18,7 @@ import static chess.model.Fixtures.G8;
 import static chess.model.Fixtures.H6;
 import static chess.model.material.Color.BLACK;
 import static chess.model.material.Color.WHITE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class PawnTest {
@@ -169,5 +171,13 @@ class PawnTest {
             Arguments.of(C3, D2, WHITE),
             Arguments.of(G7, G6, BLACK)
         );
+    }
+
+    @DisplayName("Pawn의 총 점수를 계산한다")
+    @ParameterizedTest
+    @CsvSource({"1,1", "2,1", "3,1.5"})
+    void totalPoint(int count, double expectedPoint) {
+        Pawn pawn = Pawn.of(WHITE);
+        assertThat(pawn.totalPoint(count)).isEqualTo(expectedPoint);
     }
 }

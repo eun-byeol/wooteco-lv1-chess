@@ -1,6 +1,7 @@
 package chess.model.board;
 
 import chess.model.material.Color;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.piece.None;
 import chess.model.piece.Piece;
 import chess.model.position.Position;
@@ -9,24 +10,34 @@ import java.util.Map;
 
 public class Board {
 
+    private static final Long DEFAULT_ID = 0L;
+
     private final Map<Position, Piece> pieces;
+    private final Long id;
     private Color turn;
 
     public Board(Map<Position, Piece> pieces, Color turn) {
+        this(pieces, DEFAULT_ID, turn);
+    }
+
+    public Board(Map<Position, Piece> pieces, Long id, Color turn) {
         this.pieces = pieces;
+        this.id = id;
         this.turn = turn;
     }
 
-    public void move(Position source, Position target) {
+    public boolean move(Position source, Position target) {
         validatePosition(source, target);
         validateMovement(source, target);
-        applyMove(source, target);
+        return applyMove(source, target);
     }
 
-    private void applyMove(Position source, Position target) {
+    private boolean applyMove(Position source, Position target) {
+        Piece targetPiece = pieces.get(target);
         pieces.put(target, findPiece(source));
         pieces.put(source, None.of());
         turn = turn.rotate();
+        return targetPiece.isKing();
     }
 
     private void validatePosition(Position source, Position target) {
@@ -54,7 +65,27 @@ public class Board {
         }
     }
 
+    public ScoreCalculator calculateScore() {
+        return new ScoreCalculator(pieces);
+    }
+
+    public Color lastTurn() {
+        return turn.rotate();
+    }
+
+    public String turnName() {
+        return turn.name();
+    }
+
     public Piece findPiece(Position position) {
         return pieces.get(position);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Board setId(Long gameId) {
+        return new Board(pieces, gameId, turn);
     }
 }

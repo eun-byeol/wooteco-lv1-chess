@@ -16,6 +16,8 @@ public abstract class Piece {
 
     public abstract Route findRoute(Position source, Position target);
 
+    public abstract double totalPoint(int count);
+
     public boolean canAttack(Position source, Position target) {
         return false;
     }
@@ -41,26 +43,6 @@ public abstract class Piece {
     }
 
     public boolean isNone() {
-        return false;
-    }
-
-    public boolean isPawn() {
-        return false;
-    }
-
-    public boolean isRook() {
-        return false;
-    }
-
-    public boolean isKnight() {
-        return false;
-    }
-
-    public boolean isBishop() {
-        return false;
-    }
-
-    public boolean isQueen() {
         return false;
     }
 

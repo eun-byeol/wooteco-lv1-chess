@@ -22,6 +22,7 @@ public class Bishop extends Piece {
     private static final List<Movement> MOVEMENTS = List.of(
         UP_LEFT, DOWN_LEFT, UP_RIGHT, DOWN_RIGHT
     );
+    private static final double POINT = 3;
 
     private Bishop(Color color) {
         super(color);
@@ -46,7 +47,7 @@ public class Bishop extends Piece {
     }
 
     @Override
-    public boolean isBishop() {
-        return true;
+    public double totalPoint(int count) {
+        return count * POINT;
     }
 }

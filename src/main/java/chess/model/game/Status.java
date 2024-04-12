@@ -1,28 +1,24 @@
 package chess.model.game;
 
 public enum Status {
+
     READY,
-    START,
-    MOVE,
-    END;
+    RUNNING,
+    FINISHED;
 
     public boolean isReady() {
         return this == READY;
     }
 
-    public boolean isStart() {
-        return this == START;
-    }
-
-    public boolean isMove() {
-        return this == MOVE;
-    }
-
     public boolean isRunning() {
-        return !isEnd();
+        return this == RUNNING;
     }
 
-    public boolean isEnd() {
-        return this == END;
+    public boolean isNotFinished() {
+        return !isFinished();
+    }
+
+    public boolean isFinished() {
+        return this == FINISHED;
     }
 }

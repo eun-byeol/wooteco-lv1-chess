@@ -1,105 +1,134 @@
 package chess.model.game;
 
+import static chess.model.game.Status.RUNNING;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import chess.model.board.Board;
 import chess.model.board.InitialBoardFactory;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class GameStatusTest {
 
-    GameStatus gameStatus;
-    Board board = new InitialBoardFactory().generate();
-
-    @BeforeEach
-    void setUp() {
-        gameStatus = new GameStatus(
+    @DisplayName("READY 상태에서 start 명령어를 실행하면 RUNNING 상태로 바뀐다")
+    @Test
+    void changeReadyToRunning() {
+        GameStatus gameStatus = new GameStatus(
             (board) -> System.out.println("executeStart"),
-            (commands, board) -> System.out.println("executeMove")
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
         );
-    }
-
-    @DisplayName("ready에서 start를 할 수 있다")
-    @Test
-    void readyToStart() {
+        Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("start"), board);
-
-        assertThat(gameStatus.isReady()).isTrue();
-        assertThat(currentStatus.isStarted()).isTrue();
+        assertThat(currentStatus.isRunning()).isTrue();
     }
 
-    @DisplayName("start에서 start를 하면 예외가 발생한다")
+    @DisplayName("READY 상태에서 status 명령어를 실행하면 예외가 발생한다")
     @Test
-    void startToStart() {
-        gameStatus = gameStatus.action(List.of("start"), board);
+    void inValidCommandInReadyStatus() {
+        GameStatus gameStatus = new GameStatus(
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
+        assertThatThrownBy(() -> gameStatus.action(List.of("status"), board))
+            .isInstanceOf(UnsupportedOperationException.class)
+            .hasMessage("게임을 start 해 주세요.");
+    }
 
-        assertThat(gameStatus.isStarted()).isTrue();
+    @DisplayName("RUNNING 상태에서 start 명령어를 실행하면 예외가 발생한다")
+    @Test
+    void inValidCommandInRunningStatus() {
+        GameStatus gameStatus = new GameStatus(
+            RUNNING,
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
         assertThatThrownBy(() -> gameStatus.action(List.of("start"), board))
             .isInstanceOf(UnsupportedOperationException.class)
             .hasMessage("게임이 이미 진행 중 입니다.");
     }
 
-    @DisplayName("start에서 move를 할 수 있다")
+    @DisplayName("RUNNING 상태에서 move 명령어를 실행할 수 있다")
     @Test
-    void startToMove() {
-        gameStatus = gameStatus.action(List.of("start"), board);
-        GameStatus currentStatus = gameStatus.action(List.of("move", "a2", "a4"), board);
-
-        assertThat(gameStatus.isStarted()).isTrue();
-        assertThat(currentStatus.isMoved()).isTrue();
+    void moveCommandInRunningStatus() {
+        GameStatus gameStatus = new GameStatus(
+            RUNNING,
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
+        assertThatCode(() -> gameStatus.action(List.of("move", "a2", "a4"), board))
+            .doesNotThrowAnyException();
     }
 
-    @DisplayName("move에서 move를 할 수 있다")
+    @DisplayName("READY 상태에서 move 명령어를 실행하면 예외가 발생한다")
     @Test
-    void moveToMove() {
-        gameStatus = gameStatus.action(List.of("start"), board);
-        gameStatus = gameStatus.action(List.of("move", "a2", "a4"), board);
-        GameStatus currentStatus = gameStatus.action(List.of("move", "a7", "a5"), board);
-
-        assertThat(gameStatus.isMoved()).isTrue();
-        assertThat(currentStatus.isMoved()).isTrue();
-    }
-
-    @DisplayName("ready에서 move를 하면 예외가 발생한다")
-    @Test
-    void readyToMove() {
-        assertThat(gameStatus.isReady()).isTrue();
-        assertThatThrownBy(() -> gameStatus = gameStatus.action(List.of("move", "a2", "a4"), board))
+    void invalidCommandInReadyStatus() {
+        GameStatus gameStatus = new GameStatus(
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
+        assertThatThrownBy(() -> gameStatus.action(List.of("move", "a2", "a4"), board))
             .isInstanceOf(UnsupportedOperationException.class)
             .hasMessage("게임을 start 해 주세요.");
     }
 
-    @DisplayName("ready에서 finish를 할 수 있다")
+    @DisplayName("READY 상태에서 end 명령어를 실행하면 FINISHED 상태로 바뀐다")
     @Test
-    void readyToFinish() {
+    void changeReadyToFinished() {
+        GameStatus gameStatus = new GameStatus(
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
-
-        assertThat(gameStatus.isReady()).isTrue();
-        assertThat(currentStatus.isRunning()).isFalse();
+        assertThat(currentStatus.isFinished()).isTrue();
     }
 
-    @DisplayName("start에서 finish를 할 수 있다")
+    @DisplayName("RUNNING 상태에서 end 명령어를 실행하면 FINISHED 상태로 바뀐다")
     @Test
-    void startToFinish() {
-        gameStatus = gameStatus.action(List.of("start"), board);
+    void changeRunningToFinished() {
+        GameStatus gameStatus = new GameStatus(
+            RUNNING,
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
-
-        assertThat(gameStatus.isStarted()).isTrue();
-        assertThat(currentStatus.isRunning()).isFalse();
+        assertThat(currentStatus.isFinished()).isTrue();
     }
 
-    @DisplayName("move에서 finish를 할 수 있다")
+    @DisplayName("RUNNING 상태에서 move 명령어의 결과값이 false이면 FINISHED 상태로 바뀐다")
     @Test
-    void moveToFinish() {
-        gameStatus = gameStatus.action(List.of("start"), board);
-        gameStatus = gameStatus.action(List.of("move", "a2", "a4"), board);
+    void changeRunningToFinishedWhenMoveFalse() {
+        GameStatus gameStatus = new GameStatus(
+            RUNNING,
+            (board) -> System.out.println("executeStart"),
+            (commands, board) -> false,
+            (board) -> System.out.println("executeStatus"),
+            (board) -> System.out.println("executeEnd")
+        );
+        Board board = new InitialBoardFactory().generate();
         GameStatus currentStatus = gameStatus.action(List.of("end"), board);
-
-        assertThat(gameStatus.isMoved()).isTrue();
-        assertThat(currentStatus.isRunning()).isFalse();
+        assertThat(currentStatus.isFinished()).isTrue();
     }
 }

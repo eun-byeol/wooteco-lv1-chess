@@ -22,6 +22,11 @@ public class None extends Piece {
     }
 
     @Override
+    public double totalPoint(int count) {
+        return 0;
+    }
+
+    @Override
     public boolean isExist() {
         return !isNone();
     }

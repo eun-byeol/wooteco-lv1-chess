@@ -1,11 +1,19 @@
 package chess.controller;
 
+import static chess.model.material.Color.BLACK;
+import static chess.model.material.Color.WHITE;
+
 import chess.dto.BoardDto;
+import chess.dto.ColorScoreDto;
+import chess.dto.WinnerDto;
 import chess.model.board.Board;
-import chess.model.board.BoardFactory;
 import chess.model.board.InitialBoardFactory;
 import chess.model.game.GameStatus;
+import chess.model.material.Color;
+import chess.model.outcome.ColorScore;
+import chess.model.outcome.ScoreCalculator;
 import chess.model.position.Position;
+import chess.service.ChessService;
 import chess.view.InputView;
 import chess.view.OutputView;
 import java.util.List;
@@ -18,20 +26,35 @@ public final class ChessGame {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final ChessService chessService;
 
-    public ChessGame(InputView inputView, OutputView outputView) {
+    public ChessGame(InputView inputView, OutputView outputView, ChessService chessService) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.chessService = chessService;
     }
 
     public void run() {
-        inputView.printGameIntro();
-        GameStatus gameStatus = new GameStatus(this::executeStart, this::executeMove);
-        BoardFactory boardFactory = new InitialBoardFactory();
-        Board board = boardFactory.generate();
-        while (gameStatus.isRunning()) {
+        GameStatus gameStatus = new GameStatus(
+            this::executeStart,
+            this::executeMove,
+            this::executeStatus,
+            this::executeEnd
+        );
+        Board board = prepareBoard();
+        while (gameStatus.isNotFinished()) {
             gameStatus = executeGame(board, gameStatus);
         }
+    }
+
+    private Board prepareBoard() {
+        outputView.printGameIntro();
+        if (chessService.isGameSaved()) {
+            outputView.printContinueGame();
+            return chessService.loadGame();
+        }
+        Board board = new InitialBoardFactory().generate();
+        return chessService.saveGame(board);
     }
 
     private GameStatus executeGame(Board board, GameStatus gameStatus) {
@@ -48,12 +71,39 @@ public final class ChessGame {
         outputView.printChessBoard(boardDto);
     }
 
-    private void executeMove(List<String> commands, Board board) {
+    private boolean executeMove(List<String> commands, Board board) {
         Position source = Position.from(commands.get(SOURCE_INDEX));
         Position target = Position.from(commands.get(TARGET_INDEX));
-        board.move(source, target);
+        boolean isKingCaught = board.move(source, target);
+        chessService.updateGame(board);
         BoardDto boardDto = BoardDto.from(board);
         outputView.printChessBoard(boardDto);
+        return handleKingCaught(isKingCaught, board);
+    }
+
+    private boolean handleKingCaught(boolean isKingCaught, Board board) {
+        if (isKingCaught) {
+            Color color = board.lastTurn();
+            WinnerDto result = WinnerDto.from(color);
+            outputView.printGameResult(result);
+            chessService.deleteGame(board.getId());
+        }
+        return isKingCaught;
+    }
+
+    private void executeStatus(Board board) {
+        ScoreCalculator scoreCalculator = board.calculateScore();
+        ColorScore whiteScore = scoreCalculator.calculate(WHITE);
+        ColorScore blackScore = scoreCalculator.calculate(BLACK);
+        ColorScoreDto whiteScoreDto = ColorScoreDto.from(whiteScore);
+        ColorScoreDto blackScoreDto = ColorScoreDto.from(blackScore);
+        outputView.printScoreStatus(whiteScoreDto, blackScoreDto);
+    }
+
+    private void executeEnd(Board board) {
+        executeStatus(board);
+        chessService.updateGame(board);
+        outputView.printSaveGame();
     }
 
     private <T> T retryOnException(Supplier<T> operation) {

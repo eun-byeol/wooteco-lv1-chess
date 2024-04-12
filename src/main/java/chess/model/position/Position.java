@@ -1,5 +1,7 @@
 package chess.model.position;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Position {
@@ -23,6 +25,12 @@ public class Position {
         Column column = Column.findColumn(coordinate.charAt(COLUMN_INDEX));
         Row row = Row.findRow(coordinate.charAt(ROW_INDEX));
         return new Position(column, row);
+    }
+
+    public static List<Position> rows(Column column) {
+        return Arrays.stream(Row.values())
+            .map(row -> new Position(column, row))
+            .toList();
     }
 
     public int calculateColumnOffSet(Position target) {
